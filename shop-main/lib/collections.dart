@@ -19,13 +19,13 @@ class CollectionsPage extends StatelessWidget {
         'title': 'Clothing',
         'image': 'assets/images/uop_tshirt.webp',
         'items': [
-          {'title': 'T‑Shirt', 'price': '£20', 'image': 'assets/images/uop_tshirt.webp', 'category': 'Clothing'},
-          {'title': 'Hoodie', 'price': '£35', 'image': 'assets/images/uop_hoodie.webp', 'category': 'Clothing'},
-          {'title': 'Sweatshirt', 'price': '£30', 'image': 'assets/images/uop_sweatshirt.webp', 'category': 'Clothing'},
-          {'title': 'Jacket', 'price': '£55', 'image': 'assets/images/uop_jacket.webp', 'category': 'Clothing'},
-          {'title': 'Polo Shirt', 'price': '£22', 'image': 'assets/images/uop_polo_shirt.webp', 'category': 'Clothing'},
-          {'title': 'Beanie', 'price': '£12', 'image': 'assets/images/uop_beanie.webp', 'category': 'Clothing'},
-          {'title': 'Scarf', 'price': '£15', 'image': 'assets/images/uop_scarf.webp', 'category': 'Clothing'},
+          {'title': 'T‑Shirt', 'price': '£20', 'image': 'assets/images/uop_tshirt.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Hoodie', 'price': '£35', 'image': 'assets/images/uop_hoodie.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Sweatshirt', 'price': '£30', 'image': 'assets/images/uop_sweatshirt.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Jacket', 'price': '£55', 'image': 'assets/images/uop_jacket.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Polo Shirt', 'price': '£22', 'image': 'assets/images/uop_polo_shirt.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Beanie', 'price': '£12', 'image': 'assets/images/uop_beanie.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
+          {'title': 'Scarf', 'price': '£15', 'image': 'assets/images/uop_scarf.webp', 'category': 'Clothing', 'sizes': 'XS,S,M,L,XL,XXL'},
         ],
       },
       {
@@ -179,7 +179,8 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
     return double.tryParse(cleaned) ?? 0.0;
   }
 
-  String _bestPrice(Map<String, String> e) => (e['salePrice'] ?? '').isNotEmpty ? e['salePrice']! : (e['price'] ?? '£0');
+  String _bestPrice(Map<String, String> e) =>
+      (e['salePrice'] ?? '').isNotEmpty ? e['salePrice']! : (e['price'] ?? '£0');
 
   List<Map<String, String>> get filteredItems {
     final isSaleCollection = widget.title.toLowerCase().contains('sale');

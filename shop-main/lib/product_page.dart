@@ -22,9 +22,15 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     final titleNorm = title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+    final categoryNorm = (item?['category'] ?? '').toLowerCase();
 
-    if (titleNorm.contains('tshirt') || titleNorm.contains('hoodie')) {
-      return ['S', 'M', 'L', 'XL'];
+    if (categoryNorm == 'clothing' ||
+        titleNorm.contains('tshirt') ||
+        titleNorm.contains('hoodie') ||
+        titleNorm.contains('sweatshirt') ||
+        titleNorm.contains('polo') ||
+        titleNorm.contains('jacket')) {
+      return ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     }
 
     return [];
