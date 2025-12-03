@@ -11,6 +11,14 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   String? _selectedSize;
+  int _quantity = 1;
+  late final TextEditingController _qtyCtrl = TextEditingController(text: '1');
+
+  @override
+  void dispose() {
+    _qtyCtrl.dispose();
+    super.dispose();
+  }
 
   List<String> _sizesForItem(String title, Map<String, String>? item) {
     final sizesRaw = item?['sizes'];
@@ -70,7 +78,7 @@ class _ProductPageState extends State<ProductPage> {
       if (t.contains('highlighter')) return 'Bright highlighter for study notes.';
       if (t.contains('folder')) return 'Document folder to keep papers organized.';
       if (t.contains('sticky')) return 'Sticky notes for quick reminders.';
-      if (t.contains('ruler')) return '30cm ruler with clear markings.'; // fixed typo
+      if (t.contains('ruler')) return '30cm ruler with clear markings.';
       if (t.contains('planner')) return 'Weekly planner to manage your schedule.';
       return 'Study-ready stationery for every course.';
     }
@@ -118,10 +126,18 @@ class _ProductPageState extends State<ProductPage> {
         title: title,
         image: image,
         unitPrice: unitPrice,
-        quantity: 1,
+        quantity: _quantity,
         size: currentSelected,
       ));
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to cart')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added $_quantity × $title')));
+    }
+
+    void _setQuantity(int q) {
+      final newQ = q < 1 ? 1 : q;
+      setState(() {
+        _quantity = newQ;
+        _qtyCtrl.text = '$newQ';
+      });
     }
 
     return Scaffold(
@@ -173,6 +189,48 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   const SizedBox(height: 12),
                 ],
+
+                // Quantity selector
+                const Text('Quantity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    IconButton(
+                      tooltip: 'Decrease',
+                      onPressed: () => _setQuantity(_quantity - 1),
+                      icon: const Icon(Icons.remove_circle_outline),
+                    ),
+                    SizedBox(
+                      width: 64,
+                      child: TextFormField(
+                        controller: _qtyCtrl,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        onChanged: (v) {
+                          final n = int.tryParse(v);
+                          if (n != null && n > 0) {
+                            _quantity = n; // do not setState to avoid cursor jump
+                          }
+                        },
+                        onEditingComplete: () {
+                          final n = int.tryParse(_qtyCtrl.text) ?? _quantity;
+                          _setQuantity(n);
+                          FocusScope.of(context).unfocus();
+                        },
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: 'Increase',
+                      onPressed: () => _setQuantity(_quantity + 1),
+                      icon: const Icon(Icons.add_circle_outline),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
                 const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
