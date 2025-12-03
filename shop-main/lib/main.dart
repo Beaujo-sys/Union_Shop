@@ -186,11 +186,7 @@ class HomeScreen extends StatelessWidget {
                                                     ),
                                                     const SizedBox(height: 12),
                                                     item('Home', Icons.home_outlined, () => navigateToHome(context)),
-                                                    item('Product Sales', Icons.local_offer_outlined, () {
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        const SnackBar(content: Text('Navigating to Product Sales')),
-                                                      );
-                                                    }),
+                                                    // Removed "Product Sales" from dropdown
                                                     item('About Us', Icons.info_outline, () => navigateToAbout(context)),
                                                     const Divider(height: 0),
                                                     item('Search', Icons.search, placeholderCallbackForButtons),
