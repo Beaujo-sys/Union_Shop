@@ -36,6 +36,47 @@ class _ProductPageState extends State<ProductPage> {
     return [];
   }
 
+  String _descriptionForItem(Map<String, String>? item) {
+    final t = (item?['title'] ?? '').toLowerCase();
+    final c = (item?['category'] ?? '').toLowerCase();
+
+    if (c == 'clothing') {
+      if (t.contains('hoodie')) return 'Soft cotton-blend hoodie with UoP theme.';
+      if (t.contains('tshirt') || t.contains('t‑shirt')) return 'Classic T‑shirt featuring the UoP colours.';
+      if (t.contains('sweatshirt')) return 'Comfort-fit sweatshirt for everyday wear.';
+      if (t.contains('jacket')) return 'Lightweight jacket suitable for campus commutes.';
+      if (t.contains('polo')) return 'Smart-casual polo shirt.';
+      if (t.contains('beanie')) return 'Warm knit beanie in UoP colors.';
+      if (t.contains('scarf')) return 'Winter scarf to keep you warm on cold days.';
+      return 'UoP apparel made for comfort and style.';
+    }
+
+    if (c == 'accessories') {
+      if (t.contains('backpack')) return 'Durable backpack with spacious compartments.';
+      if (t.contains('cap')) return 'Adjustable cap with UoP theme.';
+      if (t.contains('lanyard')) return 'Secure lanyard for ID cards and keys.';
+      if (t.contains('keyring')) return 'Metal keyring.';
+      if (t.contains('water bottle')) return 'Reusable bottle to stay hydrated on campus.';
+      if (t.contains('tote')) return 'Canvas tote for books and daily essentials.';
+      if (t.contains('badge')) return 'Badge';
+      return 'Practical UoP accessories for daily use.';
+    }
+
+    if (c == 'stationery') {
+      if (t.contains('notebook')) return 'A5 notebook with lined pages for lectures.';
+      if (t.contains('pen')) return 'Smooth-writing ballpoint pen.';
+      if (t.contains('pencil')) return 'HB pencil for notes and sketches.';
+      if (t.contains('highlighter')) return 'Bright highlighter for study notes.';
+      if (t.contains('folder')) return 'Document folder to keep papers organized.';
+      if (t.contains('sticky')) return 'Sticky notes for quick reminders.';
+      if (t.contains('ruler')) return '3ruler with clear markings.';
+      if (t.contains('planner')) return 'Weekly planner to manage your schedule.';
+      return 'Study-ready stationery for every course.';
+    }
+
+    return 'Official UoP merchandise.';
+  }
+
   Widget imageWidget(String image) {
     if (image.isEmpty) {
       return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
@@ -56,7 +97,9 @@ class _ProductPageState extends State<ProductPage> {
     final title = item?['title'] ?? 'Product';
     final price = item?['price'] ?? '';
     final salePrice = item?['salePrice'] ?? '';
-    final description = item?['description'] ?? 'No description available.';
+    final description = (item?['description']?.trim().isNotEmpty == true)
+        ? item!['description']!
+        : _descriptionForItem(item);
     final image = item?['image'] ?? '';
 
     final availableSizes = _sizesForItem(title, item);
