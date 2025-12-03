@@ -305,16 +305,9 @@ class HomeScreen extends StatelessWidget {
             // Footer
             Container(
               width: double.infinity,
-              color: Colors.grey[50],
-              padding: const EdgeInsets.all(24),
-              child: const Text(
-                'Placeholder Footer',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              color: Colors.grey[100],
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              child: const Footer(),
             ),
           ],
         ),
@@ -322,19 +315,19 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
+ 
 class ProductCard extends StatelessWidget {
   final String title;
   final String price;
   final String imageUrl;
-
+ 
   const ProductCard({
     super.key,
     required this.title,
     required this.price,
     required this.imageUrl,
   });
-
+ 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -376,6 +369,94 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+ 
+// Add footer widget
+class Footer extends StatelessWidget {
+  const Footer({super.key});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        LayoutBuilder(builder: (context, constraints) {
+          final isWide = constraints.maxWidth > 600;
+          return isWide
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    _FooterColumn(
+                      title: 'Shop',
+                      links: ['All products', 'New', 'Offers'],
+                    ),
+                    _FooterColumn(
+                      title: 'Company',
+                      links: ['About Us', 'Careers', 'Press'],
+                    ),
+                    _FooterColumn(
+                      title: 'Support',
+                      links: ['Contact', 'FAQ', 'Shipping'],
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    _FooterColumn(
+                      title: 'Shop',
+                      links: ['All products', 'New', 'Offers'],
+                    ),
+                    SizedBox(height: 12),
+                    _FooterColumn(
+                      title: 'Company',
+                      links: ['About Us', 'Careers', 'Press'],
+                    ),
+                    SizedBox(height: 12),
+                    _FooterColumn(
+                      title: 'Support',
+                      links: ['Contact', 'FAQ', 'Shipping'],
+                    ),
+                  ],
+                );
+        }),
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 8),
+        const Text(
+          '© ${2025} Union Shop — All rights reserved',
+          style: TextStyle(color: Colors.grey, fontSize: 13),
+        ),
+      ],
+    );
+  }
+}
+ 
+class _FooterColumn extends StatelessWidget {
+  final String title;
+  final List<String> links;
+  const _FooterColumn({required this.title, required this.links});
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        for (final link in links)
+          TextButton(
+            onPressed: () {}, // non-functional placeholder
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(0, 28),
+              alignment: Alignment.centerLeft,
+            ),
+            child: Text(link, style: const TextStyle(color: Colors.grey)),
+          ),
+      ],
     );
   }
 }
