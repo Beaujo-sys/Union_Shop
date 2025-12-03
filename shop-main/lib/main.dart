@@ -99,8 +99,8 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: () => navigateToHome(context),
-                                child: Image.network(
-                                  'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
+                                child: Image.asset(
+                                  'assets/images/uop_logo.webp',
                                   height: 18,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
@@ -253,7 +253,7 @@ class HomeScreen extends StatelessWidget {
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage('https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'),
+                          image: AssetImage('assets/images/uop_logo2.webp'),
                           fit: BoxFit.cover,
                         ),
                       ),
