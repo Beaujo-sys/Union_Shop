@@ -160,7 +160,21 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   onPressed: placeholderCallbackForButtons,
                                 ),
-                                // Menu with About entry (single dropdown)
+                                // About icon moved out of the dropdown — opens About page directly
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.info_outline,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 32,
+                                    minHeight: 32,
+                                  ),
+                                  onPressed: () => navigateToAbout(context),
+                                ),
+                                // Menu (no About entry any more)
                                 PopupMenuButton<String>(
                                    icon: const Icon(
                                      Icons.menu,
@@ -168,17 +182,10 @@ class HomeScreen extends StatelessWidget {
                                      color: Colors.grey,
                                    ),
                                    onSelected: (value) {
-                                     if (value == 'about') {
-                                       navigateToAbout(context);
-                                     } else {
-                                       // handle other menu items if added later
-                                     }
+                                    // handle other menu items here
                                    },
                                    itemBuilder: (context) => const [
-                                     PopupMenuItem(
-                                       value: 'about',
-                                       child: Text('About Us'),
-                                     ),
+                                    // no About entry here anymore
                                    ],
                                  ),
                               ],
