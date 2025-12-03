@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/cart.dart';
 
 class ProductPage extends StatefulWidget {
   final Map<String, String>? item;
@@ -69,7 +70,7 @@ class _ProductPageState extends State<ProductPage> {
       if (t.contains('highlighter')) return 'Bright highlighter for study notes.';
       if (t.contains('folder')) return 'Document folder to keep papers organized.';
       if (t.contains('sticky')) return 'Sticky notes for quick reminders.';
-      if (t.contains('ruler')) return '3ruler with clear markings.';
+      if (t.contains('ruler')) return '30cm ruler with clear markings.'; // fixed typo
       if (t.contains('planner')) return 'Weekly planner to manage your schedule.';
       return 'Study-ready stationery for every course.';
     }
@@ -95,23 +96,32 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final title = item?['title'] ?? 'Product';
-    final price = item?['price'] ?? '';
-    final salePrice = item?['salePrice'] ?? '';
+    final priceStr = item?['price'] ?? '';
+    final salePriceStr = item?['salePrice'] ?? '';
+    final image = item?['image'] ?? '';
     final description = (item?['description']?.trim().isNotEmpty == true)
         ? item!['description']!
         : _descriptionForItem(item);
-    final image = item?['image'] ?? '';
+
+    double _parse(String s) {
+      final cleaned = s.replaceAll(RegExp(r'[^0-9.]'), '');
+      return double.tryParse(cleaned) ?? 0.0;
+    }
+    final unitPrice = salePriceStr.isNotEmpty ? _parse(salePriceStr) : _parse(priceStr);
 
     final availableSizes = _sizesForItem(title, item);
     final currentSelected = _selectedSize ?? (availableSizes.isNotEmpty ? availableSizes.first : null);
 
-    void addToBasketDemo() {
-      final chosen = _selectedSize ?? (availableSizes.isNotEmpty ? availableSizes.first : null);
-      final sizeText = chosen != null ? ' (size $chosen)' : '';
-      final usedPrice = salePrice.isNotEmpty ? salePrice : price;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Added $title$sizeText — $usedPrice to basket (demo)')),
-      );
+    void addToCart() {
+      final cart = CartProvider.of(context);
+      cart.addItem(CartItem(
+        title: title,
+        image: image,
+        unitPrice: unitPrice,
+        quantity: 1,
+        size: currentSelected,
+      ));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to cart')));
     }
 
     return Scaffold(
@@ -127,23 +137,23 @@ class _ProductPageState extends State<ProductPage> {
                 Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
 
-                if (salePrice.isNotEmpty)
+                if (salePriceStr.isNotEmpty)
                   Row(
                     children: [
-                      if (price.isNotEmpty)
+                      if (priceStr.isNotEmpty)
                         Text(
-                          price,
+                          priceStr,
                           style: const TextStyle(fontSize: 16, color: Colors.grey, decoration: TextDecoration.lineThrough),
                         ),
-                      if (price.isNotEmpty) const SizedBox(width: 8),
+                      if (priceStr.isNotEmpty) const SizedBox(width: 8),
                       Text(
-                        salePrice,
+                        salePriceStr,
                         style: const TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.bold),
                       ),
                     ],
                   )
-                else if (price.isNotEmpty)
-                  Text(price, style: const TextStyle(fontSize: 18, color: Color(0xFF4d2963))),
+                else if (priceStr.isNotEmpty)
+                  Text(priceStr, style: const TextStyle(fontSize: 18, color: Color(0xFF4d2963))),
 
                 const SizedBox(height: 12),
 
@@ -172,11 +182,23 @@ class _ProductPageState extends State<ProductPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: addToBasketDemo,
-        icon: const Icon(Icons.add_shopping_cart),
-        label: const Text('Add to basket'),
-        backgroundColor: const Color(0xFF4d2963),
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: addToCart,
+            icon: const Icon(Icons.add_shopping_cart),
+            label: const Text('Add to cart'),
+            backgroundColor: const Color(0xFF4d2963),
+          ),
+          const SizedBox(width: 12),
+          FloatingActionButton(
+            onPressed: () => Navigator.pushNamed(context, '/cart'),
+            tooltip: 'View cart',
+            child: const Icon(Icons.shopping_bag_outlined),
+            backgroundColor: const Color(0xFF4d2963),
+          ),
+        ],
       ),
     );
   }

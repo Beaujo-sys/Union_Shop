@@ -4,9 +4,11 @@ import 'package:union_shop/shipping_page.dart';
 import 'package:union_shop/collections.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/profile.dart';
+import 'package:union_shop/cart.dart';
 
 void main() {
-  runApp(const UnionShopApp());
+  final cart = CartModel();
+  runApp(CartProvider(cart: cart, child: const UnionShopApp()));
 }
 
 class UnionShopApp extends StatelessWidget {
@@ -17,21 +19,18 @@ class UnionShopApp extends StatelessWidget {
     return MaterialApp(
       title: 'Union Shop',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
-      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
-        '/profile': (context) => const ProfilePage(),
         '/collections': (context) => const CollectionsPage(),
-
+        '/profile': (context) => const ProfilePage(),
         '/product': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
           return ProductPage(item: args);
         },
+        '/cart': (context) => const CartPage(),
       },
     );
   }
@@ -58,6 +57,10 @@ class HomeScreen extends StatelessWidget {
 
   void navigateToCollections(BuildContext context) {
     Navigator.pushNamed(context, '/collections');
+  }
+
+  void navigateToCart(BuildContext context) {
+    Navigator.pushNamed(context, '/cart');
   }
 
   void placeholderCallbackForButtons() {
@@ -192,7 +195,7 @@ class HomeScreen extends StatelessWidget {
                                                     const Divider(height: 0),
                                                     item('Search', Icons.search, placeholderCallbackForButtons),
                                                     item('Profile', Icons.person_outline, () => navigateToProfile(context)),
-                                                    item('Cart', Icons.shopping_bag_outlined, placeholderCallbackForButtons),
+                                                    item('Cart', Icons.shopping_bag_outlined, () => navigateToCart(context)),
                                                     const SizedBox(height: 8),
                                                   ],
                                                 ),
@@ -220,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                                             icon: const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.grey),
                                             padding: const EdgeInsets.all(8),
                                             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: placeholderCallbackForButtons,
+                                            onPressed: () => navigateToCart(context),
                                           ),
                                           IconButton(
                                             icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
