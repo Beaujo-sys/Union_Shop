@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/about_page.dart';
 import 'package:union_shop/shipping_page.dart';
 import 'package:union_shop/collections.dart';
-import 'package:union_shop/product_page.dart'; // added - ProductPage moved here
+import 'package:union_shop/product_page.dart'; // <-- added
 
 void main() {
   runApp(const UnionShopApp());
@@ -282,26 +282,24 @@ class HomeScreen extends StatelessWidget {
                       mainAxisSpacing: 48,
                       children: const [
                         ProductCard(
-                          title: 'Placeholder Product 1',
-                          price: '£10.00',
-                          imageUrl: 'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'
+                          title: 'Hoodie ',
+                          price: '£15',
+                          imageUrl: 'assets/images/uop_hoodie.webp',
                         ),
                         ProductCard(
-                          title: 'Placeholder Product 2',
-                          price: '£15.00',
-                          imageUrl: 'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'
+                          title: 'Pen',
+                          price: '£2.00',
+                          imageUrl: 'assets/images/uop_pen.webp',
                         ),
                         ProductCard(
-                          title: 'Placeholder Product 3',
+                          title: 'T-Shirt',
                           price: '£20.00',
-                          imageUrl:
-                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                          imageUrl: 'assets/images/uop_tshirt.webp',
                         ),
                         ProductCard(
-                          title: 'Placeholder Product 4',
-                          price: '£25.00',
-                          imageUrl:
-                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                          title: 'Cap',
+                          price: '£10.00',
+                          imageUrl: 'assets/images/uop_cap.webp',
                         ),
                       ],
                     ),
@@ -340,7 +338,12 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/product');
+        // pass the item map so ProductPage can read title/price/image (and salePrice if present)
+        Navigator.pushNamed(
+          context,
+          '/product',
+          arguments: {'title': title, 'price': price, 'image': imageUrl},
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,3 +479,5 @@ class _FooterColumn extends StatelessWidget {
     );
   }
 }
+
+// Removed the duplicate ProductPage class here — ProductPage now lives in product_page.dart
