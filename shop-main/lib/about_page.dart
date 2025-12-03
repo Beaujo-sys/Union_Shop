@@ -31,7 +31,7 @@ Happy shopping!
 
 The Union Shop & Reception Team''',
               style: TextStyle(color: Colors.grey),
-            ), // fill in
+            ),
           ],
         ),
       ),

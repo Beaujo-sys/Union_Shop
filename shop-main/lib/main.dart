@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/about_page.dart';
 import 'package:union_shop/shipping_page.dart';
 import 'package:union_shop/collections.dart';
-import 'package:union_shop/product_page.dart'; // <-- added
-import 'package:union_shop/profile.dart'; // <-- added
+import 'package:union_shop/product_page.dart';
+import 'package:union_shop/profile.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -25,10 +25,9 @@ class UnionShopApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
-        '/profile': (context) => const ProfilePage(), // <- new profile route
+        '/profile': (context) => const ProfilePage(),
         '/collections': (context) => const CollectionsPage(),
 
-        // '/product' now uses a generic ProductPage (NOT TShirtPage)
         '/product': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
           return ProductPage(item: args);
@@ -71,13 +70,11 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header (includes search, account, basket, menu icons, about)
             Container(
               height: 100,
               color: Colors.white,
               child: Column(
                 children: [
-                  // Top banner
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -88,7 +85,6 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  // Main header
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -118,7 +114,6 @@ class HomeScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 16),
 
-                              // Show header hyperlinks only on non-mobile
                               if (!isMobile)
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -149,7 +144,6 @@ class HomeScreen extends StatelessWidget {
 
                               const Spacer(),
 
-                              // Right-side actions: icons (collapsed into dropdown on mobile)
                               ConstrainedBox(
                                 constraints: const BoxConstraints(maxWidth: 600),
                                 child: isMobile
@@ -247,18 +241,16 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Hero Section
             SizedBox(
               height: 400,
               width: double.infinity,
               child: Stack(
                 children: [
-                  // Background image
                   Positioned.fill(
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage('https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'), // <- replace with your hero filename
+                          image: NetworkImage('https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -269,7 +261,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Content overlay
                   Positioned(
                     left: 24,
                     right: 24,
@@ -318,7 +309,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Products Section
             Container(
               color: Colors.white,
               child: Padding(
@@ -369,7 +359,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Footer
             Container(
               width: double.infinity,
               color: Colors.grey[100],
@@ -399,7 +388,6 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // pass the item map so ProductPage can read title/price/image (and salePrice if present)
         Navigator.pushNamed(
           context,
           '/product',
@@ -445,7 +433,6 @@ class ProductCard extends StatelessWidget {
   }
 }
  
-// Add footer widget
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
@@ -526,7 +513,7 @@ class _FooterColumn extends StatelessWidget {
               } else if (link == 'About Us') {
                 Navigator.pushNamed(context, '/about');
               } else {
-                // non-functional placeholder for other links
+                
               }
             },
             style: TextButton.styleFrom(

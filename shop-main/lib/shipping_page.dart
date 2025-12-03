@@ -18,17 +18,17 @@ class ShippingPage extends StatelessWidget {
             SizedBox(height: 12),
             Text('Shipping', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
-            Text('Shipping cost varies depending on the destination with all orders in the UK eligible for free shipping on orders over £30.', style: TextStyle(color: Colors.grey)), // fill in shipping details here
+            Text('Shipping cost varies depending on the destination with all orders in the UK eligible for free shipping on orders over £30.', style: TextStyle(color: Colors.grey)),
 
             SizedBox(height: 24),
             Text('Delivery Times', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
-            Text('Delivery usually takes 3-5 business days within the UK.', style: TextStyle(color: Colors.grey)), // fill in
+            Text('Delivery usually takes 3-5 business days within the UK.', style: TextStyle(color: Colors.grey)),
 
             SizedBox(height: 24),
             Text('Returns & Exchanges', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
-            Text('Products can be returned within 14 days of receipt.', style: TextStyle(color: Colors.grey)), // fill in
+            Text('Products can be returned within 14 days of receipt.', style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),

@@ -15,13 +15,12 @@ class _ProductPageState extends State<ProductPage> {
     final sizesRaw = item?['sizes'];
     if (sizesRaw != null && sizesRaw.trim().isNotEmpty) {
       return sizesRaw
-          .split(RegExp(r'[;,]')) // support comma or semicolon
+          .split(RegExp(r'[;,]'))
           .map((s) => s.trim())
           .where((s) => s.isNotEmpty)
           .toList();
     }
 
-    // Normalize title: remove non-alphanumeric chars so variants like "T‑Shirt" match
     final titleNorm = title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
 
     if (titleNorm.contains('tshirt') || titleNorm.contains('hoodie')) {
@@ -64,7 +63,6 @@ class _ProductPageState extends State<ProductPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Added $title$sizeText — $usedPrice to basket (demo)')),
       );
-      // TODO: replace with real basket add logic
     }
 
     return Scaffold(
@@ -80,7 +78,6 @@ class _ProductPageState extends State<ProductPage> {
                 Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
 
-                // Price display: show salePrice if present
                 if (salePrice.isNotEmpty)
                   Row(
                     children: [
@@ -101,7 +98,6 @@ class _ProductPageState extends State<ProductPage> {
 
                 const SizedBox(height: 12),
 
-                // Size selector (only when sizes available)
                 if (availableSizes.isNotEmpty) ...[
                   const Text('Size', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),

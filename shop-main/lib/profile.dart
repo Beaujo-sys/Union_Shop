@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {}, // non-functional placeholder
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4d2963),
                     minimumSize: const Size.fromHeight(48),
@@ -49,7 +49,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () {}, // non-functional placeholder
+                  onPressed: () {},
                   child: const Text("Don't have an account? Sign Up"),
                 ),
               ],
