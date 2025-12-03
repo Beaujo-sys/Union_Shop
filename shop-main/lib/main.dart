@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:union_shop/product_page.dart';
 import 'package:union_shop/about_page.dart';
 import 'package:union_shop/shipping_page.dart';
-import 'package:union_shop/collections_page.dart';
+import 'package:union_shop/collections.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -19,14 +18,18 @@ class UnionShopApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
-      // Make HomeScreen the first page that opens
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
-        '/product': (context) => const ProductPage(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
         '/collections': (context) => const CollectionsPage(),
+
+        // '/product' now uses a generic ProductPage (NOT TShirtPage)
+        '/product': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+          return ProductPage(item: args);
+        },
       },
     );
   }
@@ -193,9 +196,7 @@ class HomeScreen extends StatelessWidget {
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
-                          ),
+                          image: NetworkImage('https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'), // <- replace with your hero filename
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -282,14 +283,12 @@ class HomeScreen extends StatelessWidget {
                         ProductCard(
                           title: 'Placeholder Product 1',
                           price: '£10.00',
-                          imageUrl:
-                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                          imageUrl: 'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'
                         ),
                         ProductCard(
                           title: 'Placeholder Product 2',
                           price: '£15.00',
-                          imageUrl:
-                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                          imageUrl: 'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282'
                         ),
                         ProductCard(
                           title: 'Placeholder Product 3',
@@ -473,6 +472,58 @@ class _FooterColumn extends StatelessWidget {
             child: Text(link, style: const TextStyle(color: Colors.grey)),
           ),
       ],
+    );
+  }
+}
+
+// Add a simple generic product page so only the T‑Shirt route opens TShirtPage.
+class ProductPage extends StatelessWidget {
+  final Map<String, String>? item;
+  const ProductPage({super.key, this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final title = item?['title'] ?? 'Product';
+    final price = item?['price'] ?? '';
+    final description = item?['description'] ?? 'No description available.';
+    final image = item?['image'] ?? '';
+
+    Widget imageWidget() {
+      if (image.isEmpty) {
+        return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
+      }
+      if (image.startsWith('assets/')) {
+        return Image.asset(image, height: 240, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) {
+          return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
+        });
+      }
+      return Image.network(image, height: 240, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, __, ___) {
+        return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
+      });
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title), backgroundColor: const Color(0xFF4d2963)),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            imageWidget(),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                if (price.isNotEmpty) Text(price, style: const TextStyle(fontSize: 18, color: Color(0xFF4d2963))),
+                const SizedBox(height: 12),
+                const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Text(description, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+              ]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
