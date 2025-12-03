@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/about_page.dart';
+import 'package:union_shop/shipping_page.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -23,6 +24,7 @@ class UnionShopApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/product': (context) => const ProductPage(),
         '/about': (context) => const AboutPage(),
+        '/shipping': (context) => const ShippingPage(),
       },
     );
   }
@@ -376,7 +378,7 @@ class ProductCard extends StatelessWidget {
 // Add footer widget
 class Footer extends StatelessWidget {
   const Footer({super.key});
- 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -433,12 +435,12 @@ class Footer extends StatelessWidget {
     );
   }
 }
- 
+
 class _FooterColumn extends StatelessWidget {
   final String title;
   final List<String> links;
   const _FooterColumn({required this.title, required this.links});
- 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -448,7 +450,15 @@ class _FooterColumn extends StatelessWidget {
         const SizedBox(height: 8),
         for (final link in links)
           TextButton(
-            onPressed: () {}, // non-functional placeholder
+            onPressed: () {
+              if (link == 'Shipping') {
+                Navigator.pushNamed(context, '/shipping');
+              } else if (link == 'About Us') {
+                Navigator.pushNamed(context, '/about');
+              } else {
+                // non-functional placeholder for other links
+              }
+            },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: const Size(0, 28),
