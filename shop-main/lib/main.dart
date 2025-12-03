@@ -92,106 +92,154 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              navigateToHome(context);
-                            },
-                            child: Image.network(
-                              'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                              height: 18,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  width: 18,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isMobile = constraints.maxWidth < 500;
+
+                          return Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => navigateToHome(context),
+                                child: Image.network(
+                                  'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
                                   height: 18,
-                                  child: const Center(
-                                    child: Icon(Icons.image_not_supported,
-                                        color: Colors.grey),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const Spacer(),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.search,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      width: 18,
+                                      height: 18,
+                                      child: const Center(
+                                        child: Icon(Icons.image_not_supported, color: Colors.grey),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.person_outline,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: () => navigateToProfile(context),
+                              ),
+                              const SizedBox(width: 16),
+
+                              // Show header hyperlinks only on non-mobile
+                              if (!isMobile)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => navigateToHome(context),
+                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                      child: const Text('Home'),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    TextButton(
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Navigating to Product Sales')),
+                                        );
+                                      },
+                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                      child: const Text('Product Sales'),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    TextButton(
+                                      onPressed: () => navigateToAbout(context),
+                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                      child: const Text('About Us'),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.shopping_bag_outlined,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                // About icon moved out of the dropdown — opens About page directly
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.info_outline,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: () => navigateToAbout(context),
-                                ),
-                                // Menu (no About entry any more)
-                                PopupMenuButton<String>(
-                                   icon: const Icon(
-                                     Icons.menu,
-                                     size: 18,
-                                     color: Colors.grey,
-                                   ),
-                                   onSelected: (value) {
-                                    // handle other menu items here
-                                   },
-                                   itemBuilder: (context) => const [
-                                    // no About entry here anymore
-                                   ],
-                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
+
+                              const Spacer(),
+
+                              // Right-side actions: icons (collapsed into dropdown on mobile)
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 600),
+                                child: isMobile
+                                    ? IconButton(
+                                        icon: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            backgroundColor: Colors.white,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                            ),
+                                            builder: (ctx) {
+                                              Widget item(String label, IconData icon, VoidCallback onTap) {
+                                                return ListTile(
+                                                  leading: Icon(icon, color: const Color(0xFF4d2963)),
+                                                  title: Text(label),
+                                                  onTap: () {
+                                                    Navigator.pop(ctx);
+                                                    onTap();
+                                                  },
+                                                );
+                                              }
+
+                                              return SafeArea(
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const SizedBox(height: 8),
+                                                    Container(
+                                                      height: 4,
+                                                      width: 48,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey[300],
+                                                        borderRadius: BorderRadius.circular(2),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 12),
+                                                    item('Home', Icons.home_outlined, () => navigateToHome(context)),
+                                                    item('Product Sales', Icons.local_offer_outlined, () {
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        const SnackBar(content: Text('Navigating to Product Sales')),
+                                                      );
+                                                    }),
+                                                    item('About Us', Icons.info_outline, () => navigateToAbout(context)),
+                                                    const Divider(height: 0),
+                                                    item('Search', Icons.search, placeholderCallbackForButtons),
+                                                    item('Profile', Icons.person_outline, () => navigateToProfile(context)),
+                                                    item('Cart', Icons.shopping_bag_outlined, placeholderCallbackForButtons),
+                                                    const SizedBox(height: 8),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      )
+                                    : Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.search, size: 18, color: Colors.grey),
+                                            padding: const EdgeInsets.all(8),
+                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                            onPressed: placeholderCallbackForButtons,
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                                            padding: const EdgeInsets.all(8),
+                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                            onPressed: () => navigateToProfile(context),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.grey),
+                                            padding: const EdgeInsets.all(8),
+                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                            onPressed: placeholderCallbackForButtons,
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                                            padding: const EdgeInsets.all(8),
+                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                            onPressed: () => navigateToAbout(context),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ),
