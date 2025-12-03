@@ -81,9 +81,25 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = CartProvider.of(context);
-    const double thumbSize = 96;   // much bigger thumbnail
-    const double iconSize = 36;    // much bigger action icons
+    const double thumbSize = 96;
+    const double iconSize = 36;
     const TextStyle labelStyle = TextStyle(fontSize: 12, color: Colors.grey);
+
+    Widget qtyBadge(int qty) {
+      return Positioned(
+        right: 0,
+        bottom: 0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: const Color(0xFF4d2963),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 1))],
+          ),
+          child: Text('x$qty', style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Your Cart'), backgroundColor: const Color(0xFF4d2963)),
@@ -93,22 +109,58 @@ class CartPage extends StatelessWidget {
           if (cart.items.isEmpty) {
             return const Center(child: Text('Your cart is empty', style: TextStyle(color: Colors.grey)));
           }
+          final totalUnits = cart.items.fold<int>(0, (sum, it) => sum + it.quantity);
           return Column(
             children: [
+              // Header summary: distinct items and total units
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color: Colors.grey.shade100,
+                child: Row(
+                  children: [
+                    Text('Items: ${cart.items.length}', style: const TextStyle(fontSize: 14)),
+                    const SizedBox(width: 16),
+                    Text('Total units: $totalUnits', style: const TextStyle(fontSize: 14)),
+                  ],
+                ),
+              ),
               Expanded(
                 child: ListView.separated(
                   itemCount: cart.items.length,
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (context, i) {
                     final item = cart.items[i];
+                    final thumbnail = item.image.isNotEmpty
+                        ? (item.image.startsWith('assets/')
+                            ? Image.asset(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover)
+                            : Image.network(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover))
+                        : const Icon(Icons.image_not_supported, size: 40);
+
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      leading: item.image.isNotEmpty
-                          ? (item.image.startsWith('assets/')
-                              ? Image.asset(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover)
-                              : Image.network(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover))
-                          : const Icon(Icons.image_not_supported, size: 40),
-                      title: Text(item.title),
+                      leading: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(width: thumbSize, height: thumbSize, child: ClipRRect(borderRadius: BorderRadius.circular(8), child: thumbnail)),
+                          qtyBadge(item.quantity), // quantity badge on image
+                        ],
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(child: Text(item.title)),
+                          // inline quantity chip
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFF4d2963).withOpacity(0.2)),
+                            ),
+                            child: Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -117,7 +169,7 @@ class CartPage extends StatelessWidget {
                         ],
                       ),
                       trailing: SizedBox(
-                        width: 220, // give space for big icons + labels
+                        width: 220,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -165,8 +217,6 @@ class CartPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 4),
-                            Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 14, color: Colors.black54)),
                           ],
                         ),
                       ),
