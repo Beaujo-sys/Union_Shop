@@ -7,10 +7,8 @@ void main() {
   testWidgets('AboutPage shows title and welcome text', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: AboutPage()));
 
-    // AppBar title + body heading both use 'About Us' (may be 1+ widgets)
     expect(find.text('About Us'), findsWidgets);
 
-    // Body contains the welcome paragraph
     expect(find.textContaining('Welcome to the Union Shop', findRichText: false), findsOneWidget);
   });
 
@@ -24,15 +22,12 @@ void main() {
       ),
     );
 
-    // Ensure Footer has a TextButton labeled 'About Us'
     final aboutButton = find.widgetWithText(TextButton, 'About Us');
     expect(aboutButton, findsOneWidget);
 
-    // Tap and navigate
     await tester.tap(aboutButton);
     await tester.pumpAndSettle();
 
-    // Verify we're on AboutPage by checking for the welcome text
     expect(find.textContaining('Welcome to the Union Shop', findRichText: false), findsOneWidget);
   });
 }

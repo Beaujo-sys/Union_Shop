@@ -8,7 +8,6 @@ void main() {
       await tester.pumpWidget(const UnionShopApp());
       await tester.pump();
 
-      // Check that basic UI elements are present
       expect(
         find.text('PLACEHOLDER HEADER TEXT - STUDENTS TO UPDATE!'),
         findsOneWidget,
@@ -23,13 +22,11 @@ void main() {
       await tester.pumpWidget(const UnionShopApp());
       await tester.pump();
 
-      // Check that product cards are displayed
       expect(find.text('Placeholder Product 1'), findsOneWidget);
       expect(find.text('Placeholder Product 2'), findsOneWidget);
       expect(find.text('Placeholder Product 3'), findsOneWidget);
       expect(find.text('Placeholder Product 4'), findsOneWidget);
 
-      // Check prices are displayed
       expect(find.text('£10.00'), findsOneWidget);
       expect(find.text('£15.00'), findsOneWidget);
       expect(find.text('£20.00'), findsOneWidget);
@@ -40,7 +37,6 @@ void main() {
       await tester.pumpWidget(const UnionShopApp());
       await tester.pump();
 
-      // Check that header icons are present
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
       expect(find.byIcon(Icons.menu), findsOneWidget);
@@ -50,7 +46,6 @@ void main() {
       await tester.pumpWidget(const UnionShopApp());
       await tester.pump();
 
-      // Check that footer is present
       expect(find.text('Placeholder Footer'), findsOneWidget);
       expect(
         find.text('Students should customise this footer section'),
