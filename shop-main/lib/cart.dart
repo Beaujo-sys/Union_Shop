@@ -81,9 +81,9 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = CartProvider.of(context);
-    const double thumbSize = 96;
-    const double iconSize = 36;
-    const TextStyle labelStyle = TextStyle(fontSize: 12, color: Colors.grey);
+    const double thumbSize = 84;
+    const double iconSize = 22;            // smaller action icons
+    const TextStyle labelStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
     Widget qtyBadge(int qty) {
       return Positioned(
@@ -112,7 +112,6 @@ class CartPage extends StatelessWidget {
           final totalUnits = cart.items.fold<int>(0, (sum, it) => sum + it.quantity);
           return Column(
             children: [
-              // Header summary: distinct items and total units
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -135,91 +134,114 @@ class CartPage extends StatelessWidget {
                         ? (item.image.startsWith('assets/')
                             ? Image.asset(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover)
                             : Image.network(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover))
-                        : const Icon(Icons.image_not_supported, size: 40);
+                        : const Icon(Icons.image_not_supported, size: 32);
 
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      leading: Stack(
-                        clipBehavior: Clip.none,
+                    // Buttons UNDER each item, smaller size
+                    Widget actionBar = Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 4,
+                        alignment: WrapAlignment.end,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          SizedBox(width: thumbSize, height: thumbSize, child: ClipRRect(borderRadius: BorderRadius.circular(8), child: thumbnail)),
-                          qtyBadge(item.quantity), // quantity badge on image
-                        ],
-                      ),
-                      title: Row(
-                        children: [
-                          Expanded(child: Text(item.title)),
-                          // inline quantity chip
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF4d2963).withOpacity(0.2)),
-                            ),
-                            child: Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 12)),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Decrease',
+                                iconSize: iconSize,
+                                visualDensity: VisualDensity.compact,
+                                icon: const Icon(Icons.remove_circle_outline),
+                                onPressed: () => cart.updateQuantity(i, item.quantity - 1),
+                              ),
+                              const Text('Decrease', style: labelStyle),
+                            ],
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Increase',
+                                iconSize: iconSize,
+                                visualDensity: VisualDensity.compact,
+                                icon: const Icon(Icons.add_circle_outline),
+                                onPressed: () => cart.updateQuantity(i, item.quantity + 1),
+                              ),
+                              const Text('Increase', style: labelStyle),
+                            ],
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Remove',
+                                iconSize: iconSize,
+                                visualDensity: VisualDensity.compact,
+                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                onPressed: () => cart.removeItemAt(i),
+                              ),
+                              const Text('Remove', style: labelStyle),
+                            ],
                           ),
                         ],
                       ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (item.size != null) Text('Size: ${item.size}'),
-                          Text('Unit: ${_fmt(item.unitPrice)}'),
-                        ],
-                      ),
-                      trailing: SizedBox(
-                        width: 220,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(_fmt(item.lineTotal), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Decrease',
-                                      iconSize: iconSize,
-                                      icon: const Icon(Icons.remove_circle_outline),
-                                      onPressed: () => cart.updateQuantity(i, item.quantity - 1),
-                                    ),
-                                    const Text('Decrease', style: labelStyle),
-                                  ],
+                    );
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          leading: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              SizedBox(
+                                width: thumbSize,
+                                height: thumbSize,
+                                child: ClipRRect(borderRadius: BorderRadius.circular(8), child: thumbnail),
+                              ),
+                              qtyBadge(item.quantity),
+                            ],
+                          ),
+                          title: Row(
+                            children: [
+                              Expanded(child: Text(item.title)),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.shade50,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: const Color(0xFF4d2963).withOpacity(0.2)),
                                 ),
-                                const SizedBox(width: 8),
-                                Column(
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Increase',
-                                      iconSize: iconSize,
-                                      icon: const Icon(Icons.add_circle_outline),
-                                      onPressed: () => cart.updateQuantity(i, item.quantity + 1),
+                                child: Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 12)),
+                              ),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (item.size != null) Text('Size: ${item.size}'),
+                              Text('Unit: ${_fmt(item.unitPrice)}'),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Product total: ${_fmt(item.lineTotal)}',
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                     ),
-                                    const Text('Increase', style: labelStyle),
-                                  ],
-                                ),
-                                const SizedBox(width: 8),
-                                Column(
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Remove',
-                                      iconSize: iconSize,
-                                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                      onPressed: () => cart.removeItemAt(i),
-                                    ),
-                                    const Text('Remove', style: labelStyle),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          // trailing remains removed
                         ),
-                      ),
+                        // Buttons UNDER the tile
+                        actionBar,
+                      ],
                     );
                   },
                 ),
