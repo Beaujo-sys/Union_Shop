@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/collection_items_page.dart';
 
 class CollectionsPage extends StatelessWidget {
   const CollectionsPage({super.key});
 
-  void openProduct(BuildContext context) {
-    Navigator.pushNamed(context, '/product');
+  void openCollection(BuildContext context, String title, List<Map<String, String>> items) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CollectionItemsPage(title: title, items: items),
+      ),
+    );
   }
 
   @override
@@ -12,6 +18,7 @@ class CollectionsPage extends StatelessWidget {
     final collections = <Map<String, dynamic>>[
       {
         'title': 'Clothing',
+        'image': 'https://via.placeholder.com/400x200?text=Clothing',
         'items': [
           {'title': 'T‑Shirt', 'price': '£20', 'image': 'https://via.placeholder.com/300'},
           {'title': 'Hoodie', 'price': '£35', 'image': 'https://via.placeholder.com/300'},
@@ -19,6 +26,7 @@ class CollectionsPage extends StatelessWidget {
       },
       {
         'title': 'Accessories',
+        'image': 'https://via.placeholder.com/400x200?text=Accessories',
         'items': [
           {'title': 'Cap', 'price': '£10', 'image': 'https://via.placeholder.com/300'},
           {'title': 'Bag', 'price': '£18', 'image': 'https://via.placeholder.com/300'},
@@ -26,6 +34,7 @@ class CollectionsPage extends StatelessWidget {
       },
       {
         'title': 'Stationery',
+        'image': 'https://via.placeholder.com/400x200?text=Stationery',
         'items': [
           {'title': 'Notebook', 'price': '£5', 'image': 'https://via.placeholder.com/300'},
           {'title': 'Pen', 'price': '£2', 'image': 'https://via.placeholder.com/300'},
@@ -38,66 +47,61 @@ class CollectionsPage extends StatelessWidget {
         title: const Text('Collections'),
         backgroundColor: const Color(0xFF4d2963),
       ),
-      body: ListView.builder(
+      body: Padding(
         padding: const EdgeInsets.all(16),
-        itemCount: collections.length,
-        itemBuilder: (context, index) {
-          final col = collections[index];
-          final items = col['items'] as List<Map<String, String>>;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  col['title'] as String,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  height: 200,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: items.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (context, i) {
-                      final item = items[i];
-                      return GestureDetector(
-                        onTap: () => openProduct(context),
-                        child: SizedBox(
-                          width: 160,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    item['image']!,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (ctx, e, st) => Container(
-                                      color: Colors.grey[300],
-                                      child: const Center(child: Icon(Icons.image_not_supported)),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(item['title']!, style: const TextStyle(fontSize: 14)),
-                              const SizedBox(height: 4),
-                              Text(item['price']!, style: const TextStyle(color: Colors.grey)),
-                            ],
-                          ),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final crossAxis = constraints.maxWidth > 800 ? 3 : (constraints.maxWidth > 500 ? 2 : 1);
+          return GridView.builder(
+            itemCount: collections.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxis,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.8,
+            ),
+            itemBuilder: (context, index) {
+              final col = collections[index];
+              final items = List<Map<String, String>>.from(col['items'] as List);
+              return GestureDetector(
+                onTap: () => openCollection(context, col['title'] as String, items),
+                child: Card(
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        col['image'] as String,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
+                      ),
+                      Container(
+                        color: Colors.black.withOpacity(0.45),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              col['title'] as String,
+                              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const Spacer(),
+                            Text(
+                              '${items.length} items',
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              );
+            },
           );
-        },
+        }),
       ),
     );
   }
