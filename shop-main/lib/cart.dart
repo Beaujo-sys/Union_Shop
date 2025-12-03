@@ -81,6 +81,10 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = CartProvider.of(context);
+    const double thumbSize = 96;   // much bigger thumbnail
+    const double iconSize = 36;    // much bigger action icons
+    const TextStyle labelStyle = TextStyle(fontSize: 12, color: Colors.grey);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Your Cart'), backgroundColor: const Color(0xFF4d2963)),
       body: AnimatedBuilder(
@@ -98,11 +102,12 @@ class CartPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     final item = cart.items[i];
                     return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       leading: item.image.isNotEmpty
                           ? (item.image.startsWith('assets/')
-                              ? Image.asset(item.image, width: 56, height: 56, fit: BoxFit.cover)
-                              : Image.network(item.image, width: 56, height: 56, fit: BoxFit.cover))
-                          : const Icon(Icons.image_not_supported),
+                              ? Image.asset(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover)
+                              : Image.network(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover))
+                          : const Icon(Icons.image_not_supported, size: 40),
                       title: Text(item.title),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,34 +116,59 @@ class CartPage extends StatelessWidget {
                           Text('Unit: ${_fmt(item.unitPrice)}'),
                         ],
                       ),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(_fmt(item.lineTotal), style: const TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 6),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Decrease',
-                                icon: const Icon(Icons.remove_circle_outline),
-                                onPressed: () => cart.updateQuantity(i, item.quantity - 1),
-                              ),
-                              Text('${item.quantity}'),
-                              IconButton(
-                                tooltip: 'Increase',
-                                icon: const Icon(Icons.add_circle_outline),
-                                onPressed: () => cart.updateQuantity(i, item.quantity + 1),
-                              ),
-                              IconButton(
-                                tooltip: 'Remove',
-                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                onPressed: () => cart.removeItemAt(i),
-                              ),
-                            ],
-                          ),
-                        ],
+                      trailing: SizedBox(
+                        width: 220, // give space for big icons + labels
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(_fmt(item.lineTotal), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Decrease',
+                                      iconSize: iconSize,
+                                      icon: const Icon(Icons.remove_circle_outline),
+                                      onPressed: () => cart.updateQuantity(i, item.quantity - 1),
+                                    ),
+                                    const Text('Decrease', style: labelStyle),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Increase',
+                                      iconSize: iconSize,
+                                      icon: const Icon(Icons.add_circle_outline),
+                                      onPressed: () => cart.updateQuantity(i, item.quantity + 1),
+                                    ),
+                                    const Text('Increase', style: labelStyle),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Remove',
+                                      iconSize: iconSize,
+                                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                      onPressed: () => cart.removeItemAt(i),
+                                    ),
+                                    const Text('Remove', style: labelStyle),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 14, color: Colors.black54)),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -151,7 +181,7 @@ class CartPage extends StatelessWidget {
                   children: [
                     const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const Spacer(),
-                    Text(_fmt(cart.total), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(_fmt(cart.total), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
