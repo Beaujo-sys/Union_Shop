@@ -16,24 +16,22 @@ class AboutPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             SizedBox(height: 12),
-            Text('Our Story', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text('About Us', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
-            Text('', style: TextStyle(color: Colors.grey)), // fill in
+            Text(
+              '''Welcome to the Union Shop!
 
-            SizedBox(height: 24),
-            Text('Mission', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('', style: TextStyle(color: Colors.grey)), // fill in
+We're dedicated to giving you the very best University branded products, with a range of clothing and merchandise available to shop all year round! We even offer an exclusive personalisation service!
 
-            SizedBox(height: 24),
-            Text('Team', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('', style: TextStyle(color: Colors.grey)), // fill in
+All online purchases are available for delivery or instore collection!
 
-            SizedBox(height: 24),
-            Text('Contact', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('', style: TextStyle(color: Colors.grey)), // fill in
+We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to contact us at hello@upsu.net.
+
+Happy shopping!
+
+The Union Shop & Reception Team''',
+              style: TextStyle(color: Colors.grey),
+            ), // fill in
           ],
         ),
       ),
