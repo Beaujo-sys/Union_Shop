@@ -3,6 +3,7 @@ import 'package:union_shop/about_page.dart';
 import 'package:union_shop/shipping_page.dart';
 import 'package:union_shop/collections.dart';
 import 'package:union_shop/product_page.dart'; // <-- added
+import 'package:union_shop/profile.dart'; // <-- added
 
 void main() {
   runApp(const UnionShopApp());
@@ -24,6 +25,7 @@ class UnionShopApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
+        '/profile': (context) => const ProfilePage(), // <- new profile route
         '/collections': (context) => const CollectionsPage(),
 
         // '/product' now uses a generic ProductPage (NOT TShirtPage)
@@ -45,6 +47,10 @@ class HomeScreen extends StatelessWidget {
 
   void navigateToProduct(BuildContext context) {
     Navigator.pushNamed(context, '/product');
+  }
+
+  void navigateToProfile(BuildContext context) {
+    Navigator.pushNamed(context, '/profile');
   }
 
   void navigateToAbout(BuildContext context) {
@@ -139,7 +145,7 @@ class HomeScreen extends StatelessWidget {
                                     minWidth: 32,
                                     minHeight: 32,
                                   ),
-                                  onPressed: placeholderCallbackForButtons,
+                                  onPressed: () => navigateToProfile(context),
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -480,4 +486,3 @@ class _FooterColumn extends StatelessWidget {
   }
 }
 
-// Removed the duplicate ProductPage class here — ProductPage now lives in product_page.dart
