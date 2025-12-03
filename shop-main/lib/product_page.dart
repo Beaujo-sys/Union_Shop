@@ -84,21 +84,7 @@ class _ProductPageState extends State<ProductPage> {
                 fit: StackFit.expand,
                 children: [
                   imageWidget(image),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: addToBasketDemo,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(Icons.shopping_cart, size: 20, color: Color(0xFF4d2963)),
-                      ),
-                    ),
-                  ),
+                  // small overlay cart button removed (we keep only the large FAB)
                 ],
               ),
             ),

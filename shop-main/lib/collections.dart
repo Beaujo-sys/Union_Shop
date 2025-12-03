@@ -44,27 +44,17 @@ class CollectionsPage extends StatelessWidget {
                                       if (img.isEmpty) return Container(color: Colors.grey[300]);
                                       return Image.asset(img, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_,__,___) => Container(color: Colors.grey[300]));
                                     }),
-                                    // Add to basket button (demo only)
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          final name = item['title'] ?? 'Item';
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text('Added $name to basket (demo)')),
-                                          );
-                                        },
+                                    // Sale badge for items with a salePrice
+                                    if ((item['salePrice'] ?? '').isNotEmpty)
+                                      Positioned(
+                                        top: 8,
+                                        left: 8,
                                         child: Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white70,
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: const Icon(Icons.shopping_bag_outlined, size: 20, color: Color(0xFF4d2963)),
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(4)),
+                                          child: const Text('SALE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -76,7 +66,17 @@ class CollectionsPage extends StatelessWidget {
                                 children: [
                                   Text(item['title'] ?? '', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                                   const SizedBox(height: 4),
-                                  Text(item['price'] ?? '', style: const TextStyle(color: Colors.grey)),
+                                  // If salePrice exists show original struck-through and sale price
+                                  if ((item['salePrice'] ?? '').isNotEmpty)
+                                    Row(
+                                      children: [
+                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough)),
+                                        const SizedBox(width: 8),
+                                        Text(item['salePrice'] ?? '', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                                      ],
+                                    )
+                                  else
+                                    Text(item['price'] ?? '', style: const TextStyle(color: Colors.grey)),
                                 ],
                               ),
                             ),
@@ -107,15 +107,26 @@ class CollectionsPage extends StatelessWidget {
         'image': 'assets/images/uop_cap.webp',
         'items': [
           {'title': 'Cap', 'price': '£10', 'image': 'assets/images/uop_cap.webp'},
-          {'title': 'Bag', 'price': '£18', 'image': 'assets/images/uop_backpack.webp'},
+          {'title': 'Backpack (Clearance)', 'price': '£25', 'salePrice': '£15', 'image': 'assets/images/uop_backpack.webp'},
         ],
       },
       {
         'title': 'Stationery',
         'image': 'assets/images/uop_notebook.webp',
         'items': [
-          {'title': 'Notebook', 'price': '£5', 'image': 'assets/images/uop_notebook.webp'},
+          {'title': 'Notebook (Clearance)', 'price': '£5', 'salePrice': '£2.50', 'image': 'assets/images/uop_notebook.webp'},
           {'title': 'Pen', 'price': '£2', 'image': 'assets/images/uop_pen.webp'},
+        ],
+      },
+
+      // New collection: On Sale
+      {
+        'title': 'SALE \n3 DAYS LEFT',
+        'image': 'assets/images/uop_notebook.webp',
+        'items': [
+          // include salePrice to mark item as on sale
+          {'title': 'Notebook (Clearance)', 'price': '£5', 'salePrice': '£2.50', 'image': 'assets/images/uop_notebook.webp'},
+          {'title': 'Backpack (Clearance)', 'price': '£25', 'salePrice': '£15', 'image': 'assets/images/uop_backpack.webp'},
         ],
       },
     ];
@@ -166,24 +177,6 @@ class CollectionsPage extends StatelessWidget {
                             const Spacer(),
                             Text('${items.length} items', style: const TextStyle(color: Colors.white70)),
                           ],
-                        ),
-                      ),
-                      // Add-to-basket on collection tile (optional quick action)
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: GestureDetector(
-                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Opened ${col['title']} (demo)')),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.white70,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Icon(Icons.shopping_bag_outlined, size: 20, color: Color(0xFF4d2963)),
-                          ),
                         ),
                       ),
                     ],
