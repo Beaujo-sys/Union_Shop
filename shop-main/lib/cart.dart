@@ -83,7 +83,7 @@ class CartPage extends StatelessWidget {
     final cart = CartProvider.of(context);
     const double thumbSize = 84;
     const double iconSize = 22;            // smaller action icons
-    const TextStyle labelStyle = TextStyle(fontSize: 10, color: Colors.grey);
+    const TextStyle labelStyle = TextStyle(fontSize: 10, color: Colors.black); // was grey
 
     Widget qtyBadge(int qty) {
       return Positioned(
@@ -107,7 +107,7 @@ class CartPage extends StatelessWidget {
         animation: cart,
         builder: (context, _) {
           if (cart.items.isEmpty) {
-            return const Center(child: Text('Your cart is empty', style: TextStyle(color: Colors.grey)));
+            return const Center(child: Text('Your cart is empty', style: TextStyle(color: Colors.black))); // was grey
           }
           final totalUnits = cart.items.fold<int>(0, (sum, it) => sum + it.quantity);
           return Column(

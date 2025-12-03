@@ -241,99 +241,106 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
       appBar: AppBar(title: Text(widget.title), backgroundColor: const Color(0xFF4d2963)),
       body: Column(
         children: [
-          Container(
-            color: Colors.grey.shade100,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                if (isSaleCollection)
-                  SizedBox(
-                    width: 160,
-                    child: DropdownButtonFormField<String>(
-                      value: _category,
-                      items: const [
-                        DropdownMenuItem(value: 'All', child: Text('All categories')),
-                        DropdownMenuItem(value: 'Clothing', child: Text('Clothing')),
-                        DropdownMenuItem(value: 'Accessories', child: Text('Accessories')),
-                        DropdownMenuItem(value: 'Stationery', child: Text('Stationery')),
-                      ],
-                      onChanged: (v) {
-                        _category = v ?? 'All';
-                        currentPage = 1;
-                        setState(() {});
-                      },
-                      decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
-                    ),
-                  ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Sale only'),
-                    Switch(
-                      value: _onlySale,
-                      onChanged: (v) {
-                        _onlySale = v;
-                        currentPage = 1;
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: isWide ? 280 : 220,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Max price: £${(_maxPrice).toStringAsFixed(0)}'),
-                      Slider(
-                        min: 0,
-                        max: 100,
-                        divisions: 20,
-                        value: _maxPrice,
-                        label: '£${_maxPrice.toStringAsFixed(0)}',
+          // Wrap the filter bar in a Theme that resets text sizing to Material defaults,
+          // so it’s unaffected by the global stylesheet textTheme.
+          Theme(
+            data: Theme.of(context).copyWith(
+              textTheme: ThemeData.light().textTheme,
+            ),
+            child: Container(
+              color: Colors.grey.shade100,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (isSaleCollection)
+                    SizedBox(
+                      width: 160,
+                      child: DropdownButtonFormField<String>(
+                        value: _category,
+                        items: const [
+                          DropdownMenuItem(value: 'All', child: Text('All categories')),
+                          DropdownMenuItem(value: 'Clothing', child: Text('Clothing')),
+                          DropdownMenuItem(value: 'Accessories', child: Text('Accessories')),
+                          DropdownMenuItem(value: 'Stationery', child: Text('Stationery')),
+                        ],
                         onChanged: (v) {
-                          _maxPrice = v;
+                          _category = v ?? 'All';
                           currentPage = 1;
                           setState(() {});
                         },
-                        activeColor: const Color(0xFF4d2963),
+                        decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
+                      ),
+                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Sale only'),
+                      Switch(
+                        value: _onlySale,
+                        onChanged: (v) {
+                          _onlySale = v;
+                          currentPage = 1;
+                          setState(() {});
+                        },
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  width: 160,
-                  child: DropdownButtonFormField<String>(
-                    value: _sort,
-                    items: const [
-                      DropdownMenuItem(value: 'None', child: Text('No sort')),
-                      DropdownMenuItem(value: 'Price ↑', child: Text('Price low-high')),
-                      DropdownMenuItem(value: 'Price ↓', child: Text('Price high-low')),
-                      DropdownMenuItem(value: 'Title', child: Text('Title A-Z')),
-                    ],
-                    onChanged: (v) {
-                      _sort = v ?? 'None';
+                  SizedBox(
+                    width: isWide ? 280 : 220,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Max price: £${(_maxPrice).toStringAsFixed(0)}'),
+                        Slider(
+                          min: 0,
+                          max: 100,
+                          divisions: 20,
+                          value: _maxPrice,
+                          label: '£${_maxPrice.toStringAsFixed(0)}',
+                          onChanged: (v) {
+                            _maxPrice = v;
+                            currentPage = 1;
+                            setState(() {});
+                          },
+                          activeColor: const Color(0xFF4d2963),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 160,
+                    child: DropdownButtonFormField<String>(
+                      value: _sort,
+                      items: const [
+                        DropdownMenuItem(value: 'None', child: Text('No sort')),
+                        DropdownMenuItem(value: 'Price ↑', child: Text('Price low-high')),
+                        DropdownMenuItem(value: 'Price ↓', child: Text('Price high-low')),
+                        DropdownMenuItem(value: 'Title', child: Text('Title A-Z')),
+                      ],
+                      onChanged: (v) {
+                        _sort = v ?? 'None';
+                        currentPage = 1;
+                        setState(() {});
+                      },
+                      decoration: const InputDecoration(labelText: 'Sort', border: OutlineInputBorder()),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _category = 'All';
+                      _onlySale = false;
+                      _maxPrice = 100.0;
+                      _sort = 'None';
                       currentPage = 1;
                       setState(() {});
                     },
-                    decoration: const InputDecoration(labelText: 'Sort', border: OutlineInputBorder()),
+                    child: const Text('Reset'),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _category = 'All';
-                    _onlySale = false;
-                    _maxPrice = 100.0;
-                    _sort = 'None';
-                    currentPage = 1;
-                    setState(() {});
-                  },
-                  child: const Text('Reset'),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (filteredItems.length >= pageSize)
@@ -367,7 +374,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: pagedItems.isEmpty
-                  ? const Center(child: Text('No items match your filters', style: TextStyle(color: Colors.grey)))
+                  ? const Center(child: Text('No items match your filters', style: TextStyle(color: Colors.black)))
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxis,
@@ -424,13 +431,19 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                                       if ((item['salePrice'] ?? '').isNotEmpty)
                                         Row(
                                           children: [
-                                            Text(item['price'] ?? '', style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough)),
+                                            Text(
+                                              item['price'] ?? '',
+                                              style: const TextStyle(
+                                                color: Colors.black, // was grey
+                                                decoration: TextDecoration.lineThrough,
+                                              ),
+                                            ),
                                             const SizedBox(width: 8),
                                             Text(item['salePrice'] ?? '', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
                                           ],
                                         )
                                       else
-                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.grey)),
+                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.black)), // was grey
                                     ],
                                   ),
                                 ),

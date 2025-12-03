@@ -5,6 +5,7 @@ import 'package:union_shop/collections.dart';
 import 'package:union_shop/product_page.dart';
 import 'package:union_shop/profile.dart';
 import 'package:union_shop/cart.dart';
+import 'package:union_shop/stylesheet.dart';
 
 void main() {
   final cart = CartModel();
@@ -19,18 +20,24 @@ class UnionShopApp extends StatelessWidget {
     return MaterialApp(
       title: 'Union Shop',
       debugShowCheckedModeBanner: false,
+      theme: Styles.appTheme, // use centralized stylesheet
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
         '/collections': (context) => const CollectionsPage(),
-        '/profile': (context) => const ProfilePage(),
         '/product': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
           return ProductPage(item: args);
         },
+        '/profile': (context) => const ProfilePage(),
         '/cart': (context) => const CartPage(),
+        // Print Shack: apply alternate theme for this route
+        '/print-shack': (context) => Theme(
+          data: Styles.printShackTheme,
+          child: const CollectionsPage(), // or a dedicated PrintShackPage
+        ),
       },
     );
   }
@@ -422,7 +429,7 @@ class ProductCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 price,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
+                style: const TextStyle(fontSize: 13, color: Colors.black), // was grey
               ),
             ],
           ),
@@ -441,41 +448,58 @@ class Footer extends StatelessWidget {
       children: [
         LayoutBuilder(builder: (context, constraints) {
           final isWide = constraints.maxWidth > 600;
+          final footerTitleStyle =
+              Styles.sectionTitle.copyWith(fontSize: 16);
+          final linkStyle =
+              Styles.body.copyWith(fontSize: 14, color: Colors.black); // was grey
+
           return isWide
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     _FooterColumn(
                       title: 'Shop',
-                      links: ['All products', 'New', 'Offers'],
+                      links: const ['All products', 'New', 'Offers'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
                     _FooterColumn(
                       title: 'Company',
-                      links: ['About Us', 'Careers', 'Press'],
+                      links: const ['About Us', 'Careers', 'Press'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
                     _FooterColumn(
                       title: 'Support',
-                      links: ['Contact', 'FAQ', 'Shipping'],
+                      links: const ['Contact', 'FAQ', 'Shipping'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
                   ],
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     _FooterColumn(
                       title: 'Shop',
-                      links: ['All products', 'New', 'Offers'],
+                      links: const ['All products', 'New', 'Offers'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     _FooterColumn(
                       title: 'Company',
-                      links: ['About Us', 'Careers', 'Press'],
+                      links: const ['About Us', 'Careers', 'Press'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     _FooterColumn(
                       title: 'Support',
-                      links: ['Contact', 'FAQ', 'Shipping'],
+                      links: const ['Contact', 'FAQ', 'Shipping'],
+                      titleStyle: footerTitleStyle,
+                      linkStyle: linkStyle,
                     ),
                   ],
                 );
@@ -483,9 +507,9 @@ class Footer extends StatelessWidget {
         const SizedBox(height: 16),
         const Divider(),
         const SizedBox(height: 8),
-        const Text(
-          '© ${2025} Union Shop — All rights reserved',
-          style: TextStyle(color: Colors.grey, fontSize: 13),
+        Text(
+          '© ${DateTime.now().year} Union Shop — All rights reserved',
+          style: Styles.footerSmall, // ensure Styles.footerSmall is black
         ),
       ],
     );
@@ -495,14 +519,22 @@ class Footer extends StatelessWidget {
 class _FooterColumn extends StatelessWidget {
   final String title;
   final List<String> links;
-  const _FooterColumn({required this.title, required this.links});
+  final TextStyle titleStyle;
+  final TextStyle linkStyle;
+
+  const _FooterColumn({
+    required this.title,
+    required this.links,
+    required this.titleStyle,
+    required this.linkStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(title, style: titleStyle),
         const SizedBox(height: 8),
         for (final link in links)
           TextButton(
@@ -512,7 +544,7 @@ class _FooterColumn extends StatelessWidget {
               } else if (link == 'About Us') {
                 Navigator.pushNamed(context, '/about');
               } else {
-                
+                // no-op / future routes
               }
             },
             style: TextButton.styleFrom(
@@ -520,7 +552,7 @@ class _FooterColumn extends StatelessWidget {
               minimumSize: const Size(0, 28),
               alignment: Alignment.centerLeft,
             ),
-            child: Text(link, style: const TextStyle(color: Colors.grey)),
+            child: Text(link, style: linkStyle),
           ),
       ],
     );

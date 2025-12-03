@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/cart.dart';
+import 'package:union_shop/stylesheet.dart';
 
 class ProductPage extends StatefulWidget {
   final Map<String, String>? item;
@@ -150,7 +151,7 @@ class _ProductPageState extends State<ProductPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(title, style: Styles.title),
                 const SizedBox(height: 8),
 
                 if (salePriceStr.isNotEmpty)
@@ -159,17 +160,17 @@ class _ProductPageState extends State<ProductPage> {
                       if (priceStr.isNotEmpty)
                         Text(
                           priceStr,
-                          style: const TextStyle(fontSize: 16, color: Colors.grey, decoration: TextDecoration.lineThrough),
+                          style: Styles.strikePrice,
                         ),
                       if (priceStr.isNotEmpty) const SizedBox(width: 8),
                       Text(
                         salePriceStr,
-                        style: const TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                        style: Styles.salePrice,
                       ),
                     ],
                   )
                 else if (priceStr.isNotEmpty)
-                  Text(priceStr, style: const TextStyle(fontSize: 18, color: Color(0xFF4d2963))),
+                  Text(priceStr, style: Styles.price),
 
                 const SizedBox(height: 12),
 
@@ -232,9 +233,10 @@ class _ProductPageState extends State<ProductPage> {
                 ),
                 const SizedBox(height: 12),
 
-                const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const Text('Description',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
-                Text(description, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                Text(description, style: Styles.body),
               ]),
             ),
           ],
