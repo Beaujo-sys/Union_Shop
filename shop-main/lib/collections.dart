@@ -25,7 +25,8 @@ class CollectionsPage extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         final route = item['route'];
-                          Navigator.pushNamed(context, '/product', arguments: item);
+                        final target = (route?.isNotEmpty == true) ? route! : '/product';
+                        Navigator.pushNamed(context, target, arguments: item);
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -35,11 +36,37 @@ class CollectionsPage extends StatelessWidget {
                             Expanded(
                               child: ClipRRect(
                                 borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                                child: Builder(builder: (_) {
-                                  final img = item['image'] ?? '';
-                                  if (img.isEmpty) return Container(color: Colors.grey[300]);
-                                  return Image.asset(img, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_,__,___) => Container(color: Colors.grey[300]));
-                                }),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Builder(builder: (_) {
+                                      final img = item['image'] ?? '';
+                                      if (img.isEmpty) return Container(color: Colors.grey[300]);
+                                      return Image.asset(img, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_,__,___) => Container(color: Colors.grey[300]));
+                                    }),
+                                    // Add to basket button (demo only)
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          final name = item['title'] ?? 'Item';
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Added $name to basket (demo)')),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: const Icon(Icons.shopping_bag_outlined, size: 20, color: Color(0xFF4d2963)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Padding(
@@ -71,7 +98,7 @@ class CollectionsPage extends StatelessWidget {
         'title': 'Clothing',
         'image': 'assets/images/uop_tshirt.webp',
         'items': [
-          {'title': 'T‑Shirt', 'price': '£20', 'image': 'assets/images/uop_tshirt.webp', 'route': '/tshirt'},
+          {'title': 'T‑Shirt', 'price': '£20', 'image': 'assets/images/uop_tshirt.webp'},
           {'title': 'Hoodie', 'price': '£35', 'image': 'assets/images/uop_hoodie.webp'},
         ],
       },
@@ -139,6 +166,24 @@ class CollectionsPage extends StatelessWidget {
                             const Spacer(),
                             Text('${items.length} items', style: const TextStyle(color: Colors.white70)),
                           ],
+                        ),
+                      ),
+                      // Add-to-basket on collection tile (optional quick action)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Opened ${col['title']} (demo)')),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(Icons.shopping_bag_outlined, size: 20, color: Color(0xFF4d2963)),
+                          ),
                         ),
                       ),
                     ],
