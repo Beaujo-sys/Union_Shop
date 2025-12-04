@@ -31,7 +31,11 @@ class UnionShopApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/about': (context) => const AboutPage(),
         '/shipping': (context) => const ShippingPage(),
-        '/collections': (context) => const CollectionsPage(),
+        '/collections': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+          final initial = args?['open'];
+          return CollectionsPage(initialOpenTitle: initial);
+        },
         '/product': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
           return ProductPage(item: args);
@@ -81,6 +85,10 @@ class HomeScreen extends StatelessWidget {
 
   void placeholderCallbackForButtons() {
     // This is the event handler for buttons that don't work yet
+  }
+
+  void _openSearch(BuildContext context) {
+    showSearch(context: context, delegate: GlobalSearchDelegate());
   }
 
   @override
@@ -205,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                                                     // Removed "Product Sales" from dropdown
                                                     item('About Us', Icons.info_outline, () => navigateToAbout(context)),
                                                     const Divider(height: 0),
-                                                    item('Search', Icons.search, placeholderCallbackForButtons),
+                                                    item('Search', Icons.search, () => _openSearch(context)),
                                                     item('Profile', Icons.person_outline, () => navigateToProfile(context)),
                                                     item('Cart', Icons.shopping_bag_outlined, () => navigateToCart(context)),
                                                     const SizedBox(height: 8),
@@ -223,7 +231,7 @@ class HomeScreen extends StatelessWidget {
                                             icon: const Icon(Icons.search, size: 18, color: Colors.grey),
                                             padding: const EdgeInsets.all(8),
                                             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: placeholderCallbackForButtons,
+                                            onPressed: () => _openSearch(context),
                                           ),
                                           IconButton(
                                             icon: const Icon(Icons.person_outline, size: 18, color: Colors.grey),
@@ -550,6 +558,93 @@ class _FooterColumn extends StatelessWidget {
       ],
     );
   }
+}
+
+class GlobalSearchDelegate extends SearchDelegate<String> {
+  // Static entries for routes and popular collections keywords
+  final List<_SearchEntry> entries = [
+    _SearchEntry(label: 'About Us', icon: Icons.info_outline, route: '/about'),
+    _SearchEntry(label: 'Shipping', icon: Icons.local_shipping_outlined, route: '/shipping'),
+    _SearchEntry(label: 'Profile', icon: Icons.person_outline, route: '/login'),
+    _SearchEntry(label: 'Collections', icon: Icons.category_outlined, route: '/collections'),
+    // Collection keywords
+    _SearchEntry(label: 'Clothing', icon: Icons.checkroom_outlined, route: '/collections'),
+    _SearchEntry(label: 'Accessories', icon: Icons.watch_outlined, route: '/collections'),
+    _SearchEntry(label: 'Stationery', icon: Icons.edit_outlined, route: '/collections'),
+    _SearchEntry(label: 'Sale', icon: Icons.local_offer_outlined, route: '/collections'), // will deep-link
+  ];
+
+  List<_SearchEntry> _filter(String q) {
+    final query = q.trim().toLowerCase();
+    if (query.isEmpty) return entries;
+    return entries.where((e) => e.label.toLowerCase().contains(query)).toList();
+  }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      if (query.isNotEmpty)
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => query = '',
+        ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () => close(context, ''),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final items = _filter(query);
+    return _buildList(context, items);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final items = _filter(query);
+    return _buildList(context, items);
+  }
+
+  Widget _buildList(BuildContext context, List<_SearchEntry> items) {
+    if (items.isEmpty) {
+      return const Center(child: Text('No matches'));
+    }
+    return ListView.separated(
+      itemCount: items.length,
+      separatorBuilder: (_, __) => const Divider(height: 0),
+      itemBuilder: (context, i) {
+        final e = items[i];
+        return ListTile(
+          leading: Icon(e.icon, color: const Color(0xFF4d2963)),
+          title: Text(e.label),
+          onTap: () {
+            close(context, e.label);
+            // Deep-link to Sale collection by passing an argument
+            if (e.label.toLowerCase() == 'sale') {
+              Navigator.pushNamed(context, e.route, arguments: {'open': 'SALE'});
+            } else if (['clothing', 'accessories', 'stationery'].contains(e.label.toLowerCase())) {
+              Navigator.pushNamed(context, e.route, arguments: {'open': e.label});
+            } else {
+              Navigator.pushNamed(context, e.route);
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class _SearchEntry {
+  final String label;
+  final IconData icon;
+  final String route;
+  const _SearchEntry({required this.label, required this.icon, required this.route});
 }
 
 

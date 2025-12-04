@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
-class CollectionsPage extends StatelessWidget {
-  const CollectionsPage({super.key});
+class CollectionsPage extends StatefulWidget {
+  const CollectionsPage({super.key, this.initialOpenTitle});
+  final String? initialOpenTitle;
+
+  @override
+  State<CollectionsPage> createState() => _CollectionsPageState();
+}
+
+class _CollectionsPageState extends State<CollectionsPage> {
+  bool _openedInitial = false;
 
   void openCollection(BuildContext context, String title, List<Map<String, String>> items) {
     Navigator.push(
@@ -94,6 +102,21 @@ class CollectionsPage extends StatelessWidget {
           item['salePrice'] = salePrice;
         }
       }
+    }
+
+    // Open initial collection (e.g., SALE) only once
+    if (!_openedInitial && (widget.initialOpenTitle?.trim().isNotEmpty ?? false)) {
+      _openedInitial = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final match = collections.firstWhere(
+          (c) => (c['title'] as String).toLowerCase() == widget.initialOpenTitle!.toLowerCase(),
+          orElse: () => {},
+        );
+        if (match is Map<String, dynamic>) {
+          final items = List<Map<String, String>>.from(match['items'] as List);
+          openCollection(context, match['title'] as String, items);
+        }
+      });
     }
 
     return Scaffold(
