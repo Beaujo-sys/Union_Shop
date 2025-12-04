@@ -55,31 +55,4 @@ class Styles {
       bodyMedium: body,
     ),
   );
-
-  static final ThemeData printShackTheme = ThemeData(
-    primaryColor: const Color(0xFF0E8C7F),
-    scaffoldBackgroundColor: const Color(0xFFFFFBF6),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF0E8C7F),
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    iconTheme: const IconThemeData(color: Color(0xFF0E8C7F)),
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w800,
-        color: Colors.black87,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        color: Colors.black87,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: Colors.black54,
-      ),
-    ),
-  );
 }

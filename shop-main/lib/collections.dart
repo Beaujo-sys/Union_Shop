@@ -471,7 +471,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                                             Text(
                                               item['price'] ?? '',
                                               style: const TextStyle(
-                                                color: Colors.black, // was grey
+                                                color: Colors.black,
                                                 decoration: TextDecoration.lineThrough,
                                               ),
                                             ),
@@ -480,7 +480,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                                           ],
                                         )
                                       else
-                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.black)), // was grey
+                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.black)),
                                     ],
                                   ),
                                 ),

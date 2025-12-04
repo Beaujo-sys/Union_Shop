@@ -70,27 +70,13 @@ class _ShellState extends State<Shell> {
               key: _contentNavKey,
               onGenerateInitialRoutes: (NavigatorState nav, String initialRouteName) {
                 return [
-                  MaterialPageRoute(
-                    builder: (_) => HomeBody(
-                      onNavigate: _push,
-                      onReplaceTo: _replaceTo,
-                      onSearch: _openSearch,
-                    ),
-                    settings: const RouteSettings(name: '/'),
-                  ),
+                  _homeRoute(const RouteSettings(name: '/')),
                 ];
               },
               onGenerateRoute: (settings) {
                 switch (settings.name) {
                   case '/':
-                    return MaterialPageRoute(
-                      builder: (_) => HomeBody(
-                        onNavigate: _push,
-                        onReplaceTo: _replaceTo,
-                        onSearch: _openSearch,
-                      ),
-                      settings: const RouteSettings(name: '/'),
-                    );
+                    return _homeRoute(const RouteSettings(name: '/'));
                   case '/about':
                     return MaterialPageRoute(builder: (_) => const AboutPage(), settings: settings);
                   case '/shipping':
@@ -110,20 +96,26 @@ class _ShellState extends State<Shell> {
                   case '/cart':
                     return MaterialPageRoute(builder: (_) => const CartPage(), settings: settings);
                   default:
-                    return MaterialPageRoute(
-                      builder: (_) => HomeBody(
-                        onNavigate: _push,
-                        onReplaceTo: _replaceTo,
-                        onSearch: _openSearch,
-                      ),
-                      settings: const RouteSettings(name: '/'),
-                    );
+                    return _homeRoute(const RouteSettings(name: '/'));
                 }
               },
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+extension on _ShellState {
+  MaterialPageRoute _homeRoute(RouteSettings settings) {
+    return MaterialPageRoute(
+      builder: (_) => HomeBody(
+        onNavigate: _push,
+        onReplaceTo: _replaceTo,
+        onSearch: _openSearch,
+      ),
+      settings: settings,
     );
   }
 }
