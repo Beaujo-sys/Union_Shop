@@ -294,7 +294,12 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                           currentPage = 1;
                           setState(() {});
                         },
-                        decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          labelText: 'Category',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        ),
                       ),
                     ),
                   Row(
@@ -354,7 +359,12 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                         currentPage = 1;
                         setState(() {});
                       },
-                      decoration: const InputDecoration(labelText: 'Sort', border: OutlineInputBorder()),
+                      decoration: const InputDecoration(
+                        labelText: 'Sort',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      ),
                     ),
                   ),
                   TextButton(

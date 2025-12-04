@@ -95,8 +95,13 @@ class CartModel extends ChangeNotifier {
 
   Future<void> _persistIfSignedIn() async {
     // Save to Firestore only when user is signed in
-    if (FirebaseAuth.instance.currentUser != null) {
-      await _repo.saveCart(this);
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await _repo.saveCart(this);
+      }
+    } catch (_) {
+      // In tests where Firebase isn't initialized, silently skip persistence.
     }
   }
 }

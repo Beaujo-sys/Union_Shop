@@ -10,7 +10,7 @@ void main() {
       WidgetTester tester, {
       void Function(CartModel cart)? setupCart,
     }) async {
-      final cart = CartModel();
+      final cart = CartModel(authState: const Stream.empty());
       setupCart?.call(cart);
 
       await tester.pumpWidget(
