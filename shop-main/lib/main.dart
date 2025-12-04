@@ -205,6 +205,13 @@ class _HeaderBar extends StatelessWidget {
                               style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
                               child: const Text('About Us'),
                             ),
+                            const SizedBox(width: 8),
+                            // NEW: Shipping button
+                            TextButton(
+                              onPressed: () => push('/shipping'),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                              child: const Text('Shipping'),
+                            ),
                           ],
                         ),
                       const Spacer(),
@@ -248,6 +255,8 @@ class _HeaderBar extends StatelessWidget {
                                             const SizedBox(height: 12),
                                             item('Home', Icons.home_outlined, () => push('/')),
                                             item('About Us', Icons.info_outline, () => push('/about')),
+                                            // NEW: Shipping item
+                                            item('Shipping', Icons.local_shipping_outlined, () => push('/shipping')),
                                             const Divider(height: 0),
                                             item('Search', Icons.search, () => openSearch()),
                                             item('Profile', Icons.person_outline, () => push('/login')),
@@ -273,8 +282,7 @@ class _HeaderBar extends StatelessWidget {
                                     icon: const Icon(Icons.person_outline, size: 18, color: Colors.grey),
                                     padding: const EdgeInsets.all(8),
                                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                    onPressed: () => push('/login',
-                                    ),
+                                    onPressed: () => push('/login'),
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.grey),
@@ -282,12 +290,19 @@ class _HeaderBar extends StatelessWidget {
                                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                     onPressed: () => push('/cart'),
                                   ),
-                                  IconButton(
-                                    icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
-                                    padding: const EdgeInsets.all(8),
-                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                    onPressed: () => push('/about'),
-                                  ),
+                                  // Removed About Us and Shipping icons
+                                  // IconButton(
+                                  //   icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                                  //   padding: const EdgeInsets.all(8),
+                                  //   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                  //   onPressed: () => push('/about'),
+                                  // ),
+                                  // IconButton(
+                                  //   icon: const Icon(Icons.local_shipping_outlined, size: 18, color: Colors.grey),
+                                  //   padding: const EdgeInsets.all(8),
+                                  //   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                  //   onPressed: () => push('/shipping'),
+                                  // ),
                                 ],
                               ),
                       ),
