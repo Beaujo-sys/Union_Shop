@@ -74,4 +74,29 @@ void main() {
     // Search overlay gone
     expect(find.byType(TextField), findsNothing);
   });
+
+  testWidgets('search filters for About and closes via back icon', (tester) async {
+    await _pumpApp(tester);
+
+    // Open search
+    await tester.tap(find.byIcon(Icons.search));
+    await tester.pumpAndSettle();
+
+    // Type query 'about' and expect results
+    final queryField = find.byType(TextField);
+    expect(queryField, findsOneWidget);
+    await tester.enterText(queryField, 'about');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('About'), findsWidgets);
+
+    // Close via back icon
+    final backIcon = find.byIcon(Icons.arrow_back);
+    if (backIcon.evaluate().isNotEmpty) {
+      await tester.tap(backIcon);
+      await tester.pumpAndSettle();
+    }
+
+    // Ensure search overlay is closed
+    expect(find.byType(TextField), findsNothing);
+  });
 }
