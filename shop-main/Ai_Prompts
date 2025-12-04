@@ -7,14 +7,14 @@ Create a Sale page showing products with discounted prices
 Add non-functional buttons and basic page layout for authentication page
 Implement a collapsible mobile menu button to navbar
 Add non-functional icons and text buttons to the navbar
-How can I make tests
+How can I make tests for testing
 How Do I add sorting logic
 Add ability to add items to the cart
 Create a dedicated stylesheet page
 How do Implement email/password authentication
-How do I Add Google Login
+How do I add google login
 Implement quantity increase and decrease in the cart
 How do I link cart to account to save when logged out
 How do I create a functional search bar
-how do i create tests without firebase breaking them
+How do i create tests without firebase breaking them
 

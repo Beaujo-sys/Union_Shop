@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
-
 import 'package:union_shop/product.dart';
 import 'package:union_shop/cart.dart';
 import 'firebasemock_test.dart';

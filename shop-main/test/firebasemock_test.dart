@@ -18,12 +18,11 @@ class TestCartRepository extends CartRepository {
 void main() {
   test('TestCartRepository provides no-op methods', () async {
     final repo = TestCartRepository();
-    // Provide an empty auth stream to avoid touching FirebaseAuth.instance
     final cart = CartModel(repo: repo, authState: const Stream<User?>.empty());
     await repo.saveCart(cart);
     await repo.loadCartInto(cart);
     await repo.clearUserCart();
-    expect(cart.items.length, isNotNull); // basic sanity check
+    expect(cart.items.length, isNotNull); 
   });
 }
 
