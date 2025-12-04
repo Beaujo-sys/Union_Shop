@@ -8,7 +8,6 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: AboutPage()));
 
     expect(find.text('About Us'), findsWidgets);
-
     expect(find.textContaining('Welcome to the Union Shop', findRichText: false), findsOneWidget);
   });
 
