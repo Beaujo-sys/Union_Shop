@@ -8,7 +8,6 @@ import 'package:union_shop/product_page.dart';
 import 'package:union_shop/cart.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:union_shop/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,363 +25,384 @@ class UnionShopApp extends StatelessWidget {
       title: 'Union Shop',
       debugShowCheckedModeBanner: false,
       theme: Styles.appTheme,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/about': (context) => const AboutPage(),
-        '/shipping': (context) => const ShippingPage(),
-        '/collections': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
-          final initial = args?['open'];
-          return CollectionsPage(initialOpenTitle: initial);
-        },
-        '/product': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
-          return ProductPage(item: args);
-        },
-        '/login': (context) => const LoginPage(),
-        '/cart': (context) => const CartPage(),
-      },
+      home: const Shell(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+/// Root shell that shows the header and keeps it while navigating content.
+class Shell extends StatefulWidget {
+  const Shell({super.key});
+  @override
+  State<Shell> createState() => _ShellState();
+}
 
-  void navigateToHome(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+class _ShellState extends State<Shell> {
+  final GlobalKey<NavigatorState> _contentNavKey = GlobalKey<NavigatorState>();
+
+  void _push(String route, {Object? args}) {
+    final nav = _contentNavKey.currentState;
+    if (nav == null) return; // guard when not yet built
+    nav.pushNamed(route, arguments: args);
   }
 
-  void navigateToProduct(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/product',
-      arguments: {
-        'title': 'Sample',
-        'price': '£0.00',
-        'image': 'assets/images/uop_logo.webp',
-      },
-    );
+  void _replaceTo(String route, {Object? args}) {
+    final nav = _contentNavKey.currentState;
+    if (nav == null) return; // guard when not yet built
+    nav.pushNamedAndRemoveUntil(route, (_) => false, arguments: args);
   }
 
-  void navigateToProfile(BuildContext context) {
-    // Always show LoginPage when clicking the profile icon
-    Navigator.pushNamed(context, '/login');
-  }
-
-  void navigateToAbout(BuildContext context) {
-    Navigator.pushNamed(context, '/about');
-  }
-
-  void navigateToCollections(BuildContext context) {
-    Navigator.pushNamed(context, '/collections');
-  }
-
-  void navigateToCart(BuildContext context) {
-    Navigator.pushNamed(context, '/cart');
-  }
-
-  void placeholderCallbackForButtons() {
-    // This is the event handler for buttons that don't work yet
-  }
-
-  void _openSearch(BuildContext context) {
-    showSearch(context: context, delegate: GlobalSearchDelegate());
+  void _openSearch() {
+    showSearch(context: context, delegate: GlobalSearchDelegate(onNavigate: _push));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 100,
-              color: Colors.white,
+      body: Column(
+        children: [
+          const _HeaderBar(),
+          Expanded(
+            child: Navigator(
+              key: _contentNavKey,
+              // Explicitly generate the initial route to avoid null state on first frame
+              onGenerateInitialRoutes: (NavigatorState nav, String initialRouteName) {
+                return [
+                  MaterialPageRoute(
+                    builder: (_) => HomeBody(
+                      onNavigate: _push,
+                      onReplaceTo: _replaceTo,
+                      onSearch: _openSearch,
+                    ),
+                    settings: const RouteSettings(name: '/'),
+                  ),
+                ];
+              },
+              onGenerateRoute: (settings) {
+                switch (settings.name) {
+                  case '/':
+                    return MaterialPageRoute(
+                      builder: (_) => HomeBody(
+                        onNavigate: _push,
+                        onReplaceTo: _replaceTo,
+                        onSearch: _openSearch,
+                      ),
+                      settings: const RouteSettings(name: '/'),
+                    );
+                  case '/about':
+                    return MaterialPageRoute(builder: (_) => const AboutPage(), settings: settings);
+                  case '/shipping':
+                    return MaterialPageRoute(builder: (_) => const ShippingPage(), settings: settings);
+                  case '/collections':
+                    final args = settings.arguments as Map<String, String>?;
+                    final initial = args?['open'];
+                    return MaterialPageRoute(
+                      builder: (_) => CollectionsPage(initialOpenTitle: initial),
+                      settings: settings,
+                    );
+                  case '/product':
+                    final args = settings.arguments as Map<String, String>?;
+                    return MaterialPageRoute(builder: (_) => ProductPage(item: args), settings: settings);
+                  case '/login':
+                    return MaterialPageRoute(builder: (_) => const LoginPage(), settings: settings);
+                  case '/cart':
+                    return MaterialPageRoute(builder: (_) => const CartPage(), settings: settings);
+                  default:
+                    return MaterialPageRoute(
+                      builder: (_) => HomeBody(
+                        onNavigate: _push,
+                        onReplaceTo: _replaceTo,
+                        onSearch: _openSearch,
+                      ),
+                      settings: const RouteSettings(name: '/'),
+                    );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Extracted header bar (unchanged visuals)
+class _HeaderBar extends StatelessWidget {
+  const _HeaderBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      color: Colors.white,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            color: const Color(0xFF4d2963),
+            child: const Text(
+              'CHRISTMAS IS COMING - FREE DELIVERY ON ORDERS OVER £30',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isMobile = constraints.maxWidth < 500;
+
+                  void openSearch() {
+                    final shell = context.findAncestorStateOfType<_ShellState>()!;
+                    shell._openSearch();
+                  }
+                  void push(String route, {Object? args}) {
+                    final shell = context.findAncestorStateOfType<_ShellState>()!;
+                    shell._push(route, args: args);
+                  }
+
+                  return Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => push('/', args: null),
+                        child: Image.asset(
+                          'assets/images/uop_logo.webp',
+                          height: 18,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              width: 18,
+                              height: 18,
+                              child: const Center(
+                                child: Icon(Icons.image_not_supported, color: Colors.grey),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      if (!isMobile)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextButton(
+                              onPressed: () => push('/'),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                              child: const Text('Home'),
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              onPressed: () => push('/collections', args: {'open': 'SALE'}),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                              child: const Text('Product Sales'),
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              onPressed: () => push('/about'),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                              child: const Text('About Us'),
+                            ),
+                          ],
+                        ),
+                      const Spacer(),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: isMobile
+                            ? IconButton(
+                                icon: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    backgroundColor: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                    ),
+                                    builder: (ctx) {
+                                      Widget item(String label, IconData icon, VoidCallback onTap) {
+                                        return ListTile(
+                                          leading: Icon(icon, color: const Color(0xFF4d2963)),
+                                          title: Text(label),
+                                          onTap: () {
+                                            Navigator.pop(ctx);
+                                            onTap();
+                                          },
+                                        );
+                                      }
+
+                                      return SafeArea(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(height: 8),
+                                            Container(
+                                              height: 4,
+                                              width: 48,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius: BorderRadius.circular(2),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 12),
+                                            item('Home', Icons.home_outlined, () => push('/')),
+                                            item('About Us', Icons.info_outline, () => push('/about')),
+                                            const Divider(height: 0),
+                                            item('Search', Icons.search, () => openSearch()),
+                                            item('Profile', Icons.person_outline, () => push('/login')),
+                                            item('Cart', Icons.shopping_bag_outlined, () => push('/cart')),
+                                            const SizedBox(height: 8),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.search, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    onPressed: () => openSearch(),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    onPressed: () => push('/login',
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    onPressed: () => push('/cart'),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    onPressed: () => push('/about'),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Home page body (content below header)
+class HomeBody extends StatelessWidget {
+  const HomeBody({super.key, required this.onNavigate, required this.onReplaceTo, required this.onSearch});
+  final void Function(String route, {Object? args}) onNavigate;
+  final void Function(String route, {Object? args}) onReplaceTo;
+  final VoidCallback onSearch;
+
+  void navigateToCollections() => onNavigate('/collections');
+
+  @override
+  Widget build(BuildContext context) {
+    // This body renders below the persistent header in Shell.
+    // Remove the duplicated header UI here.
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // HERO SECTION
+          SizedBox(
+            height: 400,
+            width: double.infinity,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/uop_logo2.webp'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 24,
+                  right: 24,
+                  top: 80,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'WELCOME TO THE UNION SHOP',
+                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('.', style: TextStyle(fontSize: 20, color: Colors.white, height: 1.5), textAlign: TextAlign.center),
+                      const SizedBox(height: 32),
+                      ElevatedButton(
+                        onPressed: navigateToCollections,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4d2963),
+                          foregroundColor: Colors.white,
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                        ),
+                        child: const Text('BROWSE COLLECTIONS', style: TextStyle(fontSize: 14, letterSpacing: 1)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // PRODUCTS SECTION
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
               child: Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: const Color(0xFF4d2963),
-                    child: const Text(
-                      'CHRISTMAS IS COMING - FREE DELIVERY ON ORDERS OVER £30',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final isMobile = constraints.maxWidth < 500;
-
-                          return Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => navigateToHome(context),
-                                child: Image.asset(
-                                  'assets/images/uop_logo.webp',
-                                  height: 18,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      width: 18,
-                                      height: 18,
-                                      child: const Center(
-                                        child: Icon(Icons.image_not_supported, color: Colors.grey),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-
-                              if (!isMobile)
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () => navigateToHome(context),
-                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                                      child: const Text('Home'),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    TextButton(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Navigating to Product Sales')),
-                                        );
-                                      },
-                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                                      child: const Text('Product Sales'),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    TextButton(
-                                      onPressed: () => navigateToAbout(context),
-                                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                                      child: const Text('About Us'),
-                                    ),
-                                  ],
-                                ),
-
-                              const Spacer(),
-
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 600),
-                                child: isMobile
-                                    ? IconButton(
-                                        icon: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            backgroundColor: Colors.white,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                            ),
-                                            builder: (ctx) {
-                                              Widget item(String label, IconData icon, VoidCallback onTap) {
-                                                return ListTile(
-                                                  leading: Icon(icon, color: const Color(0xFF4d2963)),
-                                                  title: Text(label),
-                                                  onTap: () {
-                                                    Navigator.pop(ctx);
-                                                    onTap();
-                                                  },
-                                                );
-                                              }
-
-                                              return SafeArea(
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    const SizedBox(height: 8),
-                                                    Container(
-                                                      height: 4,
-                                                      width: 48,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey[300],
-                                                        borderRadius: BorderRadius.circular(2),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 12),
-                                                    item('Home', Icons.home_outlined, () => navigateToHome(context)),
-                                                    // Removed "Product Sales" from dropdown
-                                                    item('About Us', Icons.info_outline, () => navigateToAbout(context)),
-                                                    const Divider(height: 0),
-                                                    item('Search', Icons.search, () => _openSearch(context)),
-                                                    item('Profile', Icons.person_outline, () => navigateToProfile(context)),
-                                                    item('Cart', Icons.shopping_bag_outlined, () => navigateToCart(context)),
-                                                    const SizedBox(height: 8),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      )
-                                    : Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.search, size: 18, color: Colors.grey),
-                                            padding: const EdgeInsets.all(8),
-                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: () => _openSearch(context),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.person_outline, size: 18, color: Colors.grey),
-                                            padding: const EdgeInsets.all(8),
-                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: () => navigateToProfile(context),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.shopping_bag_outlined, size: 18, color: Colors.grey),
-                                            padding: const EdgeInsets.all(8),
-                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: () => navigateToCart(context),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
-                                            padding: const EdgeInsets.all(8),
-                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                            onPressed: () => navigateToAbout(context),
-                                          ),
-                                        ],
-                                      ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                  Text('PRODUCTS SECTION', style: Styles.sectionTitle),
+                  const SizedBox(height: 48),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+                    crossAxisSpacing: 24,
+                    mainAxisSpacing: 48,
+                    children: const [
+                      ProductCard(title: 'Hoodie ', price: '£15', imageUrl: 'assets/images/uop_hoodie.webp'),
+                      ProductCard(title: 'Pen', price: '£2.00', imageUrl: 'assets/images/uop_pen.webp'),
+                      ProductCard(title: 'T-Shirt', price: '£20.00', imageUrl: 'assets/images/uop_tshirt.webp'),
+                      ProductCard(title: 'Cap', price: '£10.00', imageUrl: 'assets/images/uop_cap.webp'),
+                    ],
                   ),
                 ],
               ),
             ),
+          ),
 
-            SizedBox(
-              height: 400,
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/uop_logo2.webp'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 24,
-                    right: 24,
-                    top: 80,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'WELCOME TO THE UNION SHOP',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          ".",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            height: 1.5,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 32),
-                        ElevatedButton(
-                          onPressed: () => navigateToCollections(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4d2963),
-                            foregroundColor: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          child: const Text(
-                            'BROWSE COLLECTIONS',
-                            style: TextStyle(fontSize: 14, letterSpacing: 1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: Column(
-                  children: [
-                    // Use centralized section title
-                    Text('PRODUCTS SECTION', style: Styles.sectionTitle),
-                    const SizedBox(height: 48),
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
-                      crossAxisSpacing: 24,
-                      mainAxisSpacing: 48,
-                      children: const [
-                        ProductCard(
-                          title: 'Hoodie ',
-                          price: '£15',
-                          imageUrl: 'assets/images/uop_hoodie.webp',
-                        ),
-                        ProductCard(
-                          title: 'Pen',
-                          price: '£2.00',
-                          imageUrl: 'assets/images/uop_pen.webp',
-                        ),
-                        ProductCard(
-                          title: 'T-Shirt',
-                          price: '£20.00',
-                          imageUrl: 'assets/images/uop_tshirt.webp',
-                        ),
-                        ProductCard(
-                          title: 'Cap',
-                          price: '£10.00',
-                          imageUrl: 'assets/images/uop_cap.webp',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            Container(
-              width: double.infinity,
-              color: Colors.grey[100],
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              child: const Footer(),
-            ),
-          ],
-        ),
+          // FOOTER
+          Container(
+            width: double.infinity,
+            color: Colors.grey[100],
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: const Footer(),
+          ),
+        ],
       ),
     );
   }
@@ -561,17 +581,18 @@ class _FooterColumn extends StatelessWidget {
 }
 
 class GlobalSearchDelegate extends SearchDelegate<String> {
-  // Static entries for routes and popular collections keywords
+  GlobalSearchDelegate({required this.onNavigate});
+  final void Function(String route, {Object? args}) onNavigate;
+
   final List<_SearchEntry> entries = [
     _SearchEntry(label: 'About Us', icon: Icons.info_outline, route: '/about'),
     _SearchEntry(label: 'Shipping', icon: Icons.local_shipping_outlined, route: '/shipping'),
     _SearchEntry(label: 'Profile', icon: Icons.person_outline, route: '/login'),
     _SearchEntry(label: 'Collections', icon: Icons.category_outlined, route: '/collections'),
-    // Collection keywords
     _SearchEntry(label: 'Clothing', icon: Icons.checkroom_outlined, route: '/collections'),
     _SearchEntry(label: 'Accessories', icon: Icons.watch_outlined, route: '/collections'),
     _SearchEntry(label: 'Stationery', icon: Icons.edit_outlined, route: '/collections'),
-    _SearchEntry(label: 'Sale', icon: Icons.local_offer_outlined, route: '/collections'), // will deep-link
+    _SearchEntry(label: 'Sale', icon: Icons.local_offer_outlined, route: '/collections'),
   ];
 
   List<_SearchEntry> _filter(String q) {
@@ -612,9 +633,7 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
   }
 
   Widget _buildList(BuildContext context, List<_SearchEntry> items) {
-    if (items.isEmpty) {
-      return const Center(child: Text('No matches'));
-    }
+    if (items.isEmpty) return const Center(child: Text('No matches'));
     return ListView.separated(
       itemCount: items.length,
       separatorBuilder: (_, __) => const Divider(height: 0),
@@ -625,13 +644,12 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
           title: Text(e.label),
           onTap: () {
             close(context, e.label);
-            // Deep-link to Sale collection by passing an argument
             if (e.label.toLowerCase() == 'sale') {
-              Navigator.pushNamed(context, e.route, arguments: {'open': 'SALE'});
+              onNavigate('/collections', args: {'open': 'SALE'});
             } else if (['clothing', 'accessories', 'stationery'].contains(e.label.toLowerCase())) {
-              Navigator.pushNamed(context, e.route, arguments: {'open': e.label});
+              onNavigate('/collections', args: {'open': e.label});
             } else {
-              Navigator.pushNamed(context, e.route);
+              onNavigate(e.route);
             }
           },
         );
