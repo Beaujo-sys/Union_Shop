@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'cart.dart';
-
-// Make Firestore purely injected. If null, all methods become no-ops.
 class CartRepository {
   final FirebaseFirestore? _db;
 
-  CartRepository({FirebaseFirestore? firestore}) : _db = firestore; // CHANGED
+  CartRepository({FirebaseFirestore? firestore}) : _db = firestore;
 
   String? get _uid => FirebaseAuth.instance.currentUser?.uid;
 

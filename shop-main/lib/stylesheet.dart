@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-/// Centralized styles, fonts and theme for the app.
 class Styles {
-  // Colors
   static const Color primary = Color(0xFF4d2963);
   static const Color secondary = Color(0xFF7b4fa1);
   static const Color background = Color(0xFFF7F7F7);
@@ -11,42 +8,38 @@ class Styles {
   static const Color textSecondary = Colors.black54;
   static const Color sale = Colors.redAccent;
 
-  // Common text styles
   static const TextStyle title =
-      TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textPrimary); // page titles
+      TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textPrimary);
   static const TextStyle sectionTitle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: textPrimary); // "PRODUCTS SECTION"
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: textPrimary);
   static const TextStyle productName =
-      TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary); // product titles
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary);
   static const TextStyle body =
-      TextStyle(fontSize: 12, color: textSecondary); // generic body text, was 14
+      TextStyle(fontSize: 12, color: textSecondary);
 
-  // Smaller UI labels (filters, chips, etc.)
   static const TextStyle uiLabel =
       TextStyle(fontSize: 11, color: textSecondary);
 
   static const TextStyle footerSmall =
-      TextStyle(fontSize: 13, color: Colors.grey); // footer copyright
+      TextStyle(fontSize: 13, color: Colors.grey);
 
   static const TextStyle price =
-      TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.w600); // normal price
+      TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.w600);
   static const TextStyle priceSmall =
-      TextStyle(fontSize: 13, color: Color.fromARGB(255, 0, 0, 0)); // small price (cards)
+      TextStyle(fontSize: 13, color: Color.fromARGB(255, 0, 0, 0));
   static const TextStyle salePrice =
-      TextStyle(fontSize: 18, color: sale, fontWeight: FontWeight.bold); // sale price
+      TextStyle(fontSize: 18, color: sale, fontWeight: FontWeight.bold);
   static const TextStyle strikePrice = TextStyle(
     fontSize: 16,
     color: Colors.grey,
     decoration: TextDecoration.lineThrough,
-  ); // old price crossed out
+  );
 
-  // NEW: About/Shipping styles (centralized)
   static const TextStyle pageHeading =
       TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black);
   static const TextStyle bodyBlack =
       TextStyle(fontSize: 14, color: Colors.black);
 
-  /// Main app theme.
   static final ThemeData appTheme = ThemeData(
     primaryColor: primary,
     scaffoldBackgroundColor: background,
@@ -59,11 +52,10 @@ class Styles {
     textTheme: TextTheme(
       titleLarge: title,
       titleMedium: sectionTitle,
-      bodyMedium: body, // now 12pt across the app
+      bodyMedium: body,
     ),
   );
 
-  /// Optional alternate theme for "/print-shack".
   static final ThemeData printShackTheme = ThemeData(
     primaryColor: const Color(0xFF0E8C7F),
     scaffoldBackgroundColor: const Color(0xFFFFFBF6),

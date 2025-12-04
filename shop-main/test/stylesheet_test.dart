@@ -7,11 +7,9 @@ void main() {
     test('appTheme is a Material Theme with expected palette', () {
       final theme = Styles.appTheme;
       expect(theme, isA<ThemeData>());
-
-      // Primary color should be set
+      
       expect(theme.primaryColor, isNotNull);
-
-      // Text theme exists
+      
       expect(theme.textTheme, isNotNull);
       expect(theme.textTheme.bodyMedium, isNotNull);
       expect(theme.textTheme.titleMedium, isNotNull);
@@ -23,8 +21,7 @@ void main() {
         home: const Scaffold(body: Text('Hello')),
       ));
       await tester.pumpAndSettle();
-
-      // Verify Theme is attached and has our primaryColor
+      
       final ctx = tester.element(find.text('Hello'));
       final theme = Theme.of(ctx);
       expect(theme, isNotNull);

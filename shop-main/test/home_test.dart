@@ -11,14 +11,12 @@ void main() {
 
     testWidgets('shows header banner and logo', (tester) async {
       await _pumpApp(tester);
-
-      // Top banner text
+      
       expect(
         find.text('CHRISTMAS IS COMING - FREE DELIVERY ON ORDERS OVER £30'),
         findsOneWidget,
       );
-
-      // Header logo image
+      
       expect(
         find.byWidgetPredicate(
           (w) => w is Image && (w.image is AssetImage),
@@ -32,9 +30,6 @@ void main() {
 
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
-      // Depending on your final UI this might be Icons.menu or Icons.person_outline
-      // Keep whichever you actually use:
-      // expect(find.byIcon(Icons.menu), findsOneWidget);
     });
 
     testWidgets('shows footer copyright text', (tester) async {
@@ -48,19 +43,16 @@ void main() {
 
     testWidgets('navigates to About page via search', (tester) async {
       await _pumpApp(tester);
-
-      // Open the search
+      
       await tester.tap(find.byIcon(Icons.search));
       await tester.pumpAndSettle();
-
-      // Type "about" and select result
+      
       await tester.enterText(find.byType(TextField), 'about');
       await tester.pumpAndSettle();
 
       await tester.tap(find.textContaining('About Us').first);
       await tester.pumpAndSettle();
-
-      // Expect AboutPage content (adjust to whatever text is on that page)
+      
       expect(find.textContaining('About'), findsWidgets);
     });
   });

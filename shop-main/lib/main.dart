@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final cart = CartModel(
-    repo: CartRepository(firestore: FirebaseFirestore.instance), // explicit runtime Firestore
+    repo: CartRepository(firestore: FirebaseFirestore.instance),
   );
   runApp(CartProvider(cart: cart, child: const UnionShopApp()));
 }
@@ -34,7 +34,6 @@ class UnionShopApp extends StatelessWidget {
   }
 }
 
-/// Root shell that shows the header and keeps it while navigating content.
 class Shell extends StatefulWidget {
   const Shell({super.key});
   @override
@@ -46,13 +45,13 @@ class _ShellState extends State<Shell> {
 
   void _push(String route, {Object? args}) {
     final nav = _contentNavKey.currentState;
-    if (nav == null) return; // guard when not yet built
+    if (nav == null) return;
     nav.pushNamed(route, arguments: args);
   }
 
   void _replaceTo(String route, {Object? args}) {
     final nav = _contentNavKey.currentState;
-    if (nav == null) return; // guard when not yet built
+    if (nav == null) return;
     nav.pushNamedAndRemoveUntil(route, (_) => false, arguments: args);
   }
 
@@ -69,7 +68,6 @@ class _ShellState extends State<Shell> {
           Expanded(
             child: Navigator(
               key: _contentNavKey,
-              // Explicitly generate the initial route to avoid null state on first frame
               onGenerateInitialRoutes: (NavigatorState nav, String initialRouteName) {
                 return [
                   MaterialPageRoute(
@@ -130,7 +128,6 @@ class _ShellState extends State<Shell> {
   }
 }
 
-/// Extracted header bar (unchanged visuals)
 class _HeaderBar extends StatelessWidget {
   const _HeaderBar();
 
@@ -210,7 +207,6 @@ class _HeaderBar extends StatelessWidget {
                               child: const Text('About Us'),
                             ),
                             const SizedBox(width: 8),
-                            // NEW: Shipping button
                             TextButton(
                               onPressed: () => push('/shipping'),
                               style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
@@ -259,7 +255,6 @@ class _HeaderBar extends StatelessWidget {
                                             const SizedBox(height: 12),
                                             item('Home', Icons.home_outlined, () => push('/')),
                                             item('About Us', Icons.info_outline, () => push('/about')),
-                                            // NEW: Shipping item
                                             item('Shipping', Icons.local_shipping_outlined, () => push('/shipping')),
                                             const Divider(height: 0),
                                             item('Search', Icons.search, () => openSearch()),
@@ -294,19 +289,6 @@ class _HeaderBar extends StatelessWidget {
                                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                     onPressed: () => push('/cart'),
                                   ),
-                                  // Removed About Us and Shipping icons
-                                  // IconButton(
-                                  //   icon: const Icon(Icons.info_outline, size: 18, color: Colors.grey),
-                                  //   padding: const EdgeInsets.all(8),
-                                  //   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                  //   onPressed: () => push('/about'),
-                                  // ),
-                                  // IconButton(
-                                  //   icon: const Icon(Icons.local_shipping_outlined, size: 18, color: Colors.grey),
-                                  //   padding: const EdgeInsets.all(8),
-                                  //   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                                  //   onPressed: () => push('/shipping'),
-                                  // ),
                                 ],
                               ),
                       ),
@@ -322,7 +304,6 @@ class _HeaderBar extends StatelessWidget {
   }
 }
 
-/// Home page body (content below header)
 class HomeBody extends StatelessWidget {
   const HomeBody({super.key, required this.onNavigate, required this.onReplaceTo, required this.onSearch});
   final void Function(String route, {Object? args}) onNavigate;
@@ -333,12 +314,9 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This body renders below the persistent header in Shell.
-    // Remove the duplicated header UI here.
     return SingleChildScrollView(
       child: Column(
         children: [
-          // HERO SECTION
           SizedBox(
             height: 400,
             width: double.infinity,
@@ -387,7 +365,6 @@ class HomeBody extends StatelessWidget {
             ),
           ),
 
-          // PRODUCTS SECTION
           Container(
             color: Colors.white,
             child: Padding(

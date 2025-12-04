@@ -264,8 +264,6 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
       appBar: AppBar(title: Text(widget.title), backgroundColor: const Color(0xFF4d2963)),
       body: Column(
         children: [
-          // Wrap the filter bar in a Theme that resets text sizing to Material defaults,
-          // so it’s unaffected by the global stylesheet textTheme.
           Theme(
             data: Theme.of(context).copyWith(
               textTheme: ThemeData.light().textTheme,

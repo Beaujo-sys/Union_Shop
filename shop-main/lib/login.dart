@@ -117,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: loading
                     ? const CircularProgressIndicator()
                     : (user != null
-                        // PROFILE VIEW (signed in)
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -153,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
                               ],
                             ],
                           )
-                        // LOGIN FORM (signed out)
                         : Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

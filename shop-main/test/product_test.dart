@@ -9,8 +9,8 @@ import 'firebasemock_test.dart';
 
 Widget _host({required Map<String, String> item}) {
   final cart = CartModel(
-    repo: TestCartRepository(),                // prevents Firestore use
-    authState: const Stream<User?>.empty(),    // prevents FirebaseAuth subscription
+    repo: TestCartRepository(),
+    authState: const Stream<User?>.empty(),
   );
   return CartProvider(
     cart: cart,
@@ -86,35 +86,26 @@ void main() {
     await tester.pumpWidget(_host(item: item));
     await tester.pumpAndSettle();
 
-    // Look for Size text and a dropdown-like control
     expect(find.textContaining('Size'), findsWidgets);
 
-    // Try DropdownButtonFormField first
     Finder sizeDropdown = find.byType(DropdownButtonFormField<String>);
     if (sizeDropdown.evaluate().isEmpty) {
-      // Fallback: any DropdownButton
       sizeDropdown = find.byType(DropdownButton<String>);
     }
     if (sizeDropdown.evaluate().isEmpty) {
-      // As a last resort, tap any Text 'M' after opening menus
-      // Open any dropdown by tapping the size label area
       final sizeLabel = find.textContaining('Size');
       if (sizeLabel.evaluate().isNotEmpty) {
         await tester.tap(sizeLabel.first);
         await tester.pumpAndSettle();
       }
-      // Select 'M' if available
       final mText = find.text('M');
       if (mText.evaluate().isNotEmpty) {
         await tester.tap(mText.last);
         await tester.pumpAndSettle();
       }
-      // At least confirm size text is present
       expect(find.textContaining('Size'), findsWidgets);
       return;
     }
-
-    // Open dropdown and select 'M'
     await tester.tap(sizeDropdown.first);
     await tester.pumpAndSettle();
     final mText = find.text('M');

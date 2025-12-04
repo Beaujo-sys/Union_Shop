@@ -19,34 +19,29 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
-      // 1) Try cart icon
+      
       final cartIcon = find.byIcon(Icons.shopping_bag_outlined);
       if (cartIcon.evaluate().isNotEmpty) {
         await tester.tap(cartIcon);
         await tester.pumpAndSettle();
         return;
       }
-
-      // 2) Fallback: named route
+      
       final ctx = tester.element(find.byType(UnionShopApp));
       try {
         Navigator.of(ctx).pushNamed('/cart');
         await tester.pumpAndSettle();
       } catch (_) {
-        // If there is no /cart route, do nothing – test will still show us the tree
       }
     }
 
     testWidgets('cart page builds without crashing', (tester) async {
       await _pumpAppAndOpenCart(tester);
 
-      // Just expect that a CartPage exists somewhere, or any widget with "Cart" in its type name
       final cartPageType = find.byType(CartPage);
       if (cartPageType.evaluate().isNotEmpty) {
         expect(cartPageType, findsOneWidget);
       } else {
-        // Very loose fallback: any Text that includes "cart" (case-insensitive)
         final anyCartText = find.byWidgetPredicate((w) {
           if (w is Text) {
             final t = w.data?.toLowerCase() ?? '';
@@ -61,7 +56,6 @@ void main() {
     testWidgets('shows at least some empty or summary text when empty', (tester) async {
       await _pumpAppAndOpenCart(tester);
 
-      // Accept *any* empty-state style message
       final emptyLikeText = find.byWidgetPredicate((w) {
         if (w is Text) {
           final t = (w.data ?? '').toLowerCase();
@@ -91,7 +85,6 @@ void main() {
         },
       );
 
-      // Look for our test item by name (anywhere)
       expect(find.text('Smoke Test Item'), findsWidgets);
     });
   });

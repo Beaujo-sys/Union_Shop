@@ -27,7 +27,7 @@ class AuthService {
     final googleAuth = await googleUser.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken, // include idToken
+      idToken: googleAuth.idToken,
     );
     return _auth.signInWithCredential(credential);
   }

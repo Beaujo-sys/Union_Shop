@@ -26,77 +26,63 @@ void main() {
 
   testWidgets('opens search and shows results, then can close', (tester) async {
     await _pumpApp(tester);
-
-    // Open search
+    
     await tester.tap(find.byIcon(Icons.search));
     await tester.pumpAndSettle();
-
-    // Type query
+    
     final queryField = find.byType(TextField);
     expect(queryField, findsOneWidget);
-
     await tester.enterText(queryField, 'about');
     await tester.pumpAndSettle();
-
-    // Expect some result
+    
     expect(find.textContaining('About'), findsWidgets);
-
-    // Try to close via back icon first
+    
     final backIcon = find.byIcon(Icons.arrow_back);
     if (backIcon.evaluate().isNotEmpty) {
       await tester.tap(backIcon);
       await tester.pumpAndSettle();
     }
-
-    // If still open, try ESC
+    
     if (queryField.evaluate().isNotEmpty) {
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
     }
-
-    // If still open, try system back (Android)
+    
     if (queryField.evaluate().isNotEmpty) {
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
     }
-
-    // Last resort: Navigator.pop on root context (protected by try/catch)
+    
     if (queryField.evaluate().isNotEmpty) {
       try {
         final ctx = tester.element(find.byType(UnionShopApp));
         Navigator.of(ctx).maybePop();
         await tester.pumpAndSettle();
       } catch (_) {
-        // swallow
       }
     }
-
-    // Search overlay gone
+    
     expect(find.byType(TextField), findsNothing);
   });
 
   testWidgets('search filters for About and closes via back icon', (tester) async {
     await _pumpApp(tester);
-
-    // Open search
+    
     await tester.tap(find.byIcon(Icons.search));
     await tester.pumpAndSettle();
-
-    // Type query 'about' and expect results
+    
     final queryField = find.byType(TextField);
     expect(queryField, findsOneWidget);
     await tester.enterText(queryField, 'about');
     await tester.pumpAndSettle();
     expect(find.textContaining('About'), findsWidgets);
-
-    // Close via back icon
+    
     final backIcon = find.byIcon(Icons.arrow_back);
     if (backIcon.evaluate().isNotEmpty) {
       await tester.tap(backIcon);
       await tester.pumpAndSettle();
     }
-
-    // Ensure search overlay is closed
+    
     expect(find.byType(TextField), findsNothing);
   });
 }

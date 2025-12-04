@@ -190,8 +190,7 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   const SizedBox(height: 12),
                 ],
-
-                // Quantity selector
+                
                 const Text('Quantity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 Row(
@@ -210,7 +209,7 @@ class _ProductPageState extends State<ProductPage> {
                         onChanged: (v) {
                           final n = int.tryParse(v);
                           if (n != null && n > 0) {
-                            _quantity = n; // do not setState to avoid cursor jump
+                            _quantity = n;
                           }
                         },
                         onEditingComplete: () {

@@ -7,7 +7,7 @@ class ShippingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
-      style: Styles.bodyBlack, // centralized black body text
+      style: Styles.bodyBlack,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Shipping Information'),

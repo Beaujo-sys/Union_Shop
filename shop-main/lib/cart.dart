@@ -7,7 +7,7 @@ import 'dart:async' as async;
 class CartItem {
   final String title;
   final String image;
-  final double unitPrice; // in pounds
+  final double unitPrice;
   final int quantity;
   final String? size;
 
@@ -30,16 +30,13 @@ class CartModel extends ChangeNotifier {
   final CartRepository _repo;
   async.StreamSubscription<User?>? _authSub;
 
-  // Allow injecting repo and auth stream (tests will pass a repo with null Firestore and empty auth)
   CartModel({CartRepository? repo, async.Stream<User?>? authState})
       : _repo = repo ?? CartRepository() {
     final stream = authState ?? FirebaseAuth.instance.authStateChanges();
     _authSub = stream.listen((user) async {
-      // When a user signs in, load their remote cart into the model.
       if (user != null) {
         await _repo.loadCartInto(this);
       } else {
-        // On sign-out, clear local cart and ensure remote cart is cleared.
         _items.clear();
         notifyListeners();
         await _repo.clearUserCart();
@@ -90,23 +87,20 @@ class CartModel extends ChangeNotifier {
   void clear() {
     _items.clear();
     notifyListeners();
-    _persistIfSignedIn(); // clears remote cart for signed-in users
+    _persistIfSignedIn();
   }
 
   Future<void> _persistIfSignedIn() async {
-    // Save to Firestore only when user is signed in
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await _repo.saveCart(this);
       }
     } catch (_) {
-      // In tests where Firebase isn't initialized, silently skip persistence.
     }
   }
 }
 
-// Simple inherited cart to access the same CartModel across pages.
 class CartProvider extends InheritedNotifier<CartModel> {
   CartProvider({super.key, required CartModel cart, required Widget child}) : super(notifier: cart, child: child);
 
@@ -129,7 +123,6 @@ class CartPage extends StatelessWidget {
     const double iconSize = 22;
     final TextStyle labelStyle = Styles.uiLabel;
 
-    // Quantity badge uses Styles palette
     Widget qtyBadge(int qty) {
       return Positioned(
         right: 0,
@@ -137,14 +130,14 @@ class CartPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: Styles.surface, // was Styles.primary
+            color: Styles.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Styles.primary.withOpacity(0.25)),
             boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 1))],
           ),
           child: Text(
             'x$qty',
-            style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold), // numbers black
+            style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -163,7 +156,6 @@ class CartPage extends StatelessWidget {
 
           return Column(
             children: [
-              // Summary header: Items and Total units styled via Styles
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -194,7 +186,7 @@ class CartPage extends StatelessWidget {
                           TextSpan(
                             text: '$totalUnits',
                             style: Styles.body.copyWith(
-                              color: Colors.black, // numbers black
+                              color: Colors.black,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -236,7 +228,6 @@ class CartPage extends StatelessWidget {
                           title: Row(
                             children: [
                               Expanded(child: Text(item.title, style: Styles.productName)),
-                              // Qty chip styled from Styles
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
@@ -266,7 +257,7 @@ class CartPage extends StatelessWidget {
                                           ),
                                           TextSpan(
                                             text: _fmt(item.lineTotal),
-                                            style: Styles.price.copyWith(color: Colors.black), // numbers black
+                                            style: Styles.price.copyWith(color: Colors.black),
                                           ),
                                         ],
                                       ),
@@ -278,7 +269,6 @@ class CartPage extends StatelessWidget {
                           ),
                         ),
 
-                        // Action bar (kept; uses labelStyle from Styles)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           child: Wrap(
@@ -335,7 +325,6 @@ class CartPage extends StatelessWidget {
                 ),
               ),
 
-              // Cart total styled from Styles
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -348,7 +337,7 @@ class CartPage extends StatelessWidget {
                     const Spacer(),
                     Text(
                       _fmt(cart.total),
-                      style: Styles.price.copyWith(color: Colors.black), // numbers black
+                      style: Styles.price.copyWith(color: Colors.black),
                     ),
                   ],
                 ),
