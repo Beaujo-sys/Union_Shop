@@ -399,7 +399,7 @@ class HomeBody extends StatelessWidget {
                     crossAxisSpacing: 24,
                     mainAxisSpacing: 48,
                     children: const [
-                      ProductCard(title: 'Hoodie ', price: '£15', imageUrl: 'assets/images/uop_hoodie.webp'),
+                      ProductCard(title: 'Keyring', price: '£3', imageUrl: 'assets/images/uop_keyring.webp'),
                       ProductCard(title: 'Pen', price: '£2.00', imageUrl: 'assets/images/uop_pen.webp'),
                       ProductCard(title: 'T-Shirt', price: '£20.00', imageUrl: 'assets/images/uop_tshirt.webp'),
                       ProductCard(title: 'Cap', price: '£10.00', imageUrl: 'assets/images/uop_cap.webp'),
