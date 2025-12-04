@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:union_shop/shipping_page.dart';
+import 'package:union_shop/shipping.dart';
 import 'package:union_shop/main.dart';
 
 void main() {

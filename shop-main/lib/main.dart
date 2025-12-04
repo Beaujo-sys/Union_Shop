@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:union_shop/about_page.dart';
-import 'package:union_shop/shipping_page.dart';
+import 'package:union_shop/about_.dart';
+import 'package:union_shop/shipping.dart';
 import 'package:union_shop/collections.dart';
-import 'package:union_shop/product_page.dart';
+import 'package:union_shop/product.dart';
 import 'package:union_shop/cart.dart';
 import 'package:union_shop/stylesheet.dart';
-import 'package:union_shop/login_page.dart';
+import 'package:union_shop/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
