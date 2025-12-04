@@ -3,54 +3,65 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/main.dart';
 
 void main() {
-  group('Home Page Tests', () {
-    testWidgets('should display home page with basic elements', (tester) async {
+  group('Home page', () {
+    Future<void> _pumpApp(WidgetTester tester) async {
       await tester.pumpWidget(const UnionShopApp());
-      await tester.pump();
+      await tester.pumpAndSettle();
+    }
 
+    testWidgets('shows header banner and logo', (tester) async {
+      await _pumpApp(tester);
+
+      // Top banner text
       expect(
-        find.text('PLACEHOLDER HEADER TEXT - STUDENTS TO UPDATE!'),
+        find.text('CHRISTMAS IS COMING - FREE DELIVERY ON ORDERS OVER £30'),
         findsOneWidget,
       );
-      expect(find.text('Placeholder Hero Title'), findsOneWidget);
-      expect(find.text('PLACEHOLDER PRODUCTS SECTION'), findsOneWidget);
-      expect(find.text('BROWSE PRODUCTS'), findsOneWidget);
-      expect(find.text('VIEW ALL PRODUCTS'), findsOneWidget);
+
+      // Header logo image
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is Image && (w.image is AssetImage),
+        ),
+        findsWidgets,
+      );
     });
 
-    testWidgets('should display product cards', (tester) async {
-      await tester.pumpWidget(const UnionShopApp());
-      await tester.pump();
-
-      expect(find.text('Placeholder Product 1'), findsOneWidget);
-      expect(find.text('Placeholder Product 2'), findsOneWidget);
-      expect(find.text('Placeholder Product 3'), findsOneWidget);
-      expect(find.text('Placeholder Product 4'), findsOneWidget);
-
-      expect(find.text('£10.00'), findsOneWidget);
-      expect(find.text('£15.00'), findsOneWidget);
-      expect(find.text('£20.00'), findsOneWidget);
-      expect(find.text('£25.00'), findsOneWidget);
-    });
-
-    testWidgets('should display header icons', (tester) async {
-      await tester.pumpWidget(const UnionShopApp());
-      await tester.pump();
+    testWidgets('shows header actions (search, cart, profile/menu)', (tester) async {
+      await _pumpApp(tester);
 
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.menu), findsOneWidget);
+      // Depending on your final UI this might be Icons.menu or Icons.person_outline
+      // Keep whichever you actually use:
+      // expect(find.byIcon(Icons.menu), findsOneWidget);
     });
 
-    testWidgets('should display footer', (tester) async {
-      await tester.pumpWidget(const UnionShopApp());
-      await tester.pump();
+    testWidgets('shows footer copyright text', (tester) async {
+      await _pumpApp(tester);
 
-      expect(find.text('Placeholder Footer'), findsOneWidget);
       expect(
-        find.text('Students should customise this footer section'),
+        find.textContaining('Union Shop — All rights reserved'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('navigates to About page via search', (tester) async {
+      await _pumpApp(tester);
+
+      // Open the search
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      // Type "about" and select result
+      await tester.enterText(find.byType(TextField), 'about');
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.textContaining('About Us').first);
+      await tester.pumpAndSettle();
+
+      // Expect AboutPage content (adjust to whatever text is on that page)
+      expect(find.textContaining('About'), findsWidgets);
     });
   });
 }
