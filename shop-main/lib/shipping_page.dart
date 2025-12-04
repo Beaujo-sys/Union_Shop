@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/stylesheet.dart';
 
 class ShippingPage extends StatelessWidget {
   const ShippingPage({super.key});
@@ -6,7 +7,7 @@ class ShippingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
-      style: const TextStyle(color: Colors.black), // force bottom/body text to black
+      style: Styles.bodyBlack, // centralized black body text
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Shipping Information'),
@@ -18,19 +19,19 @@ class ShippingPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               SizedBox(height: 12),
-              Text('Shipping', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Shipping', style: Styles.pageHeading),
               SizedBox(height: 8),
-              Text('Shipping cost varies depending on the destination with all orders in the UK eligible for free shipping on orders over £30.', style: TextStyle(color: Colors.black)), // was grey
+              Text('Shipping cost varies depending on the destination with all orders in the UK eligible for free shipping on orders over £30.', style: Styles.bodyBlack),
 
               SizedBox(height: 24),
-              Text('Delivery Times', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Delivery Times', style: Styles.pageHeading),
               SizedBox(height: 8),
-              Text('Delivery usually takes 3-5 business days within the UK.', style: TextStyle(color: Colors.black)), // was grey
+              Text('Delivery usually takes 3-5 business days within the UK.', style: Styles.bodyBlack),
 
               SizedBox(height: 24),
-              Text('Returns & Exchanges', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Returns & Exchanges', style: Styles.pageHeading),
               SizedBox(height: 8),
-              Text('Products can be returned within 14 days of receipt.', style: TextStyle(color: Colors.black)), // was grey
+              Text('Products can be returned within 14 days of receipt.', style: Styles.bodyBlack),
             ],
           ),
         ),

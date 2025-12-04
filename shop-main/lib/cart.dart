@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/stylesheet.dart';
 
 class CartItem {
   final String title;
@@ -82,9 +83,10 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = CartProvider.of(context);
     const double thumbSize = 84;
-    const double iconSize = 22;            // smaller action icons
-    const TextStyle labelStyle = TextStyle(fontSize: 10, color: Colors.black); // was grey
+    const double iconSize = 22;
+    final TextStyle labelStyle = Styles.uiLabel;
 
+    // Quantity badge uses Styles palette
     Widget qtyBadge(int qty) {
       return Positioned(
         right: 0,
@@ -92,38 +94,74 @@ class CartPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: const Color(0xFF4d2963),
+            color: Styles.surface, // was Styles.primary
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Styles.primary.withOpacity(0.25)),
             boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 1))],
           ),
-          child: Text('x$qty', style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+          child: Text(
+            'x$qty',
+            style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold), // numbers black
+          ),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Cart'), backgroundColor: const Color(0xFF4d2963)),
+      appBar: AppBar(title: const Text('Your Cart'), backgroundColor: Styles.primary),
       body: AnimatedBuilder(
         animation: cart,
         builder: (context, _) {
           if (cart.items.isEmpty) {
-            return const Center(child: Text('Your cart is empty', style: TextStyle(color: Colors.black))); // was grey
+            return const Center(child: Text('Your cart is empty'));
           }
+
           final totalUnits = cart.items.fold<int>(0, (sum, it) => sum + it.quantity);
+
           return Column(
             children: [
+              // Summary header: Items and Total units styled via Styles
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: Colors.grey.shade100,
+                color: Styles.surface,
                 child: Row(
                   children: [
-                    Text('Items: ${cart.items.length}', style: const TextStyle(fontSize: 14)),
+                    RichText(
+                      text: TextSpan(
+                        style: Styles.body.copyWith(color: Styles.textPrimary),
+                        children: [
+                          const TextSpan(text: 'Items: '),
+                          TextSpan(
+                            text: '${cart.items.length}',
+                            style: Styles.body.copyWith(
+                              color: Colors.black, // numbers black
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(width: 16),
-                    Text('Total units: $totalUnits', style: const TextStyle(fontSize: 14)),
+                    RichText(
+                      text: TextSpan(
+                        style: Styles.body.copyWith(color: Styles.textPrimary),
+                        children: [
+                          const TextSpan(text: 'Total units: '),
+                          TextSpan(
+                            text: '$totalUnits',
+                            style: Styles.body.copyWith(
+                              color: Colors.black, // numbers black
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+
               Expanded(
                 child: ListView.separated(
                   itemCount: cart.items.length,
@@ -135,58 +173,6 @@ class CartPage extends StatelessWidget {
                             ? Image.asset(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover)
                             : Image.network(item.image, width: thumbSize, height: thumbSize, fit: BoxFit.cover))
                         : const Icon(Icons.image_not_supported, size: 32);
-
-                    // Buttons UNDER each item, smaller size
-                    Widget actionBar = Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 4,
-                        alignment: WrapAlignment.end,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Decrease',
-                                iconSize: iconSize,
-                                visualDensity: VisualDensity.compact,
-                                icon: const Icon(Icons.remove_circle_outline),
-                                onPressed: () => cart.updateQuantity(i, item.quantity - 1),
-                              ),
-                              const Text('Decrease', style: labelStyle),
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Increase',
-                                iconSize: iconSize,
-                                visualDensity: VisualDensity.compact,
-                                icon: const Icon(Icons.add_circle_outline),
-                                onPressed: () => cart.updateQuantity(i, item.quantity + 1),
-                              ),
-                              const Text('Increase', style: labelStyle),
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Remove',
-                                iconSize: iconSize,
-                                visualDensity: VisualDensity.compact,
-                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                onPressed: () => cart.removeItemAt(i),
-                              ),
-                              const Text('Remove', style: labelStyle),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -206,54 +192,121 @@ class CartPage extends StatelessWidget {
                           ),
                           title: Row(
                             children: [
-                              Expanded(child: Text(item.title)),
+                              Expanded(child: Text(item.title, style: Styles.productName)),
+                              // Qty chip styled from Styles
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple.shade50,
+                                  color: Styles.surface,
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: const Color(0xFF4d2963).withOpacity(0.2)),
+                                  border: Border.all(color: Styles.primary.withOpacity(0.25)),
                                 ),
-                                child: Text('Qty: ${item.quantity}', style: const TextStyle(fontSize: 12)),
+                                child: Text('Qty: ${item.quantity}', style: Styles.uiLabel.copyWith(color: Styles.textPrimary)),
                               ),
                             ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (item.size != null) Text('Size: ${item.size}'),
-                              Text('Unit: ${_fmt(item.unitPrice)}'),
+                              if (item.size != null) Text('Size: ${item.size}', style: Styles.body),
+                              Text('Unit: ${_fmt(item.unitPrice)}', style: Styles.body),
                               const SizedBox(height: 6),
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      'Product total: ${_fmt(item.lineTotal)}',
-                                      textAlign: TextAlign.left,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Product total: ',
+                                            style: Styles.body.copyWith(color: Styles.textPrimary),
+                                          ),
+                                          TextSpan(
+                                            text: _fmt(item.lineTotal),
+                                            style: Styles.price.copyWith(color: Colors.black), // numbers black
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          // trailing remains removed
                         ),
-                        // Buttons UNDER the tile
-                        actionBar,
+
+                        // Action bar (kept; uses labelStyle from Styles)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 4,
+                            alignment: WrapAlignment.end,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Decrease',
+                                    iconSize: iconSize,
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(Icons.remove_circle_outline, color: Styles.textPrimary),
+                                    onPressed: () => cart.updateQuantity(i, item.quantity - 1),
+                                  ),
+                                  Text('Decrease', style: labelStyle),
+                                ],
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Increase',
+                                    iconSize: iconSize,
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(Icons.add_circle_outline, color: Styles.textPrimary),
+                                    onPressed: () => cart.updateQuantity(i, item.quantity + 1),
+                                  ),
+                                  Text('Increase', style: labelStyle),
+                                ],
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Remove',
+                                    iconSize: iconSize,
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                    onPressed: () => cart.removeItemAt(i),
+                                  ),
+                                  Text('Remove', style: labelStyle),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     );
                   },
                 ),
               ),
+
+              // Cart total styled from Styles
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.grey.shade100, border: const Border(top: BorderSide(color: Colors.black12))),
+                decoration: BoxDecoration(
+                  color: Styles.surface,
+                  border: Border(top: BorderSide(color: Styles.primary.withOpacity(0.1))),
+                ),
                 child: Row(
                   children: [
-                    const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text('Total', style: Styles.sectionTitle.copyWith(color: Styles.textPrimary)),
                     const Spacer(),
-                    Text(_fmt(cart.total), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      _fmt(cart.total),
+                      style: Styles.price.copyWith(color: Colors.black), // numbers black
+                    ),
                   ],
                 ),
               ),

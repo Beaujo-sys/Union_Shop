@@ -321,20 +321,13 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(40.0),
                 child: Column(
                   children: [
-                    const Text(
-                      'PRODUCTS SECTION',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        letterSpacing: 1,
-                      ),
-                    ),
+                    // Use centralized section title
+                    Text('PRODUCTS SECTION', style: Styles.sectionTitle),
                     const SizedBox(height: 48),
                     GridView.count(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount:
-                          MediaQuery.of(context).size.width > 600 ? 2 : 1,
+                      crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
                       crossAxisSpacing: 24,
                       mainAxisSpacing: 48,
                       children: const [
@@ -382,14 +375,14 @@ class ProductCard extends StatelessWidget {
   final String title;
   final String price;
   final String imageUrl;
- 
+
   const ProductCard({
     super.key,
     required this.title,
     required this.price,
     required this.imageUrl,
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -421,16 +414,9 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 14, color: Colors.black),
-                maxLines: 2,
-              ),
+              Text(title, style: Styles.productName),
               const SizedBox(height: 4),
-              Text(
-                price,
-                style: const TextStyle(fontSize: 13, color: Colors.black), // was grey
-              ),
+              Text(price, style: Styles.priceSmall),
             ],
           ),
         ],
@@ -438,7 +424,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
- 
+
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
@@ -448,10 +434,8 @@ class Footer extends StatelessWidget {
       children: [
         LayoutBuilder(builder: (context, constraints) {
           final isWide = constraints.maxWidth > 600;
-          final footerTitleStyle =
-              Styles.sectionTitle.copyWith(fontSize: 16);
-          final linkStyle =
-              Styles.body.copyWith(fontSize: 14, color: Colors.black); // was grey
+          final footerTitleStyle = Styles.sectionTitle.copyWith(fontSize: 16);
+          final linkStyle = Styles.body; // rely on stylesheet
 
           return isWide
               ? Row(
@@ -509,7 +493,7 @@ class Footer extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           '© ${DateTime.now().year} Union Shop — All rights reserved',
-          style: Styles.footerSmall, // ensure Styles.footerSmall is black
+          style: Styles.footerSmall,
         ),
       ],
     );

@@ -40,6 +40,12 @@ class Styles {
     decoration: TextDecoration.lineThrough,
   ); // old price crossed out
 
+  // NEW: About/Shipping styles (centralized)
+  static const TextStyle pageHeading =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black);
+  static const TextStyle bodyBlack =
+      TextStyle(fontSize: 14, color: Colors.black);
+
   /// Main app theme.
   static final ThemeData appTheme = ThemeData(
     primaryColor: primary,

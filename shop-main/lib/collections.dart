@@ -277,7 +277,10 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Sale only'),
+                      const Text(
+                        'Sale only',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       Switch(
                         value: _onlySale,
                         onChanged: (v) {
@@ -293,7 +296,10 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Max price: £${(_maxPrice).toStringAsFixed(0)}'),
+                        Text(
+                          'Max price: £${(_maxPrice).toStringAsFixed(0)}',
+                          style: const TextStyle(color: Colors.black),
+                        ),
                         Slider(
                           min: 0,
                           max: 100,
