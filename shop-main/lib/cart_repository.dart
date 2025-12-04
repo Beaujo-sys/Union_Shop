@@ -2,24 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'cart.dart';
 
+// Make Firestore purely injected. If null, all methods become no-ops.
 class CartRepository {
-  final _db = FirebaseFirestore.instance;
+  final FirebaseFirestore? _db;
+
+  CartRepository({FirebaseFirestore? firestore}) : _db = firestore; // CHANGED
 
   String? get _uid => FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> saveCart(CartModel cart) async {
     final uid = _uid;
-    if (uid == null) return; // only save for signed-in users
-    final batch = _db.batch();
-    final col = _db.collection('users').doc(uid).collection('cart');
+    final db = _db;
+    if (uid == null || db == null) return;
 
-    // Clear old items
+    final batch = db.batch();
+    final col = db.collection('users').doc(uid).collection('cart');
+
     final existing = await col.get();
     for (final doc in existing.docs) {
       batch.delete(doc.reference);
     }
 
-    // Write current items
     for (final item in cart.items) {
       final doc = col.doc('${item.title}:${item.size ?? ''}');
       batch.set(doc, {
@@ -36,8 +39,10 @@ class CartRepository {
 
   Future<void> loadCartInto(CartModel cart) async {
     final uid = _uid;
-    if (uid == null) return; // nothing to load for guests
-    final col = _db.collection('users').doc(uid).collection('cart');
+    final db = _db;
+    if (uid == null || db == null) return;
+
+    final col = db.collection('users').doc(uid).collection('cart');
     final snap = await col.get();
 
     cart.clear();
@@ -55,9 +60,11 @@ class CartRepository {
 
   Future<void> clearUserCart() async {
     final uid = _uid;
-    if (uid == null) return;
-    final col = _db.collection('users').doc(uid).collection('cart');
-    final batch = _db.batch();
+    final db = _db;
+    if (uid == null || db == null) return;
+
+    final col = db.collection('users').doc(uid).collection('cart');
+    final batch = db.batch();
     final snap = await col.get();
     for (final d in snap.docs) {
       batch.delete(d.reference);

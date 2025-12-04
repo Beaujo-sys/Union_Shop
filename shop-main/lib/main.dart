@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'package:union_shop/about_.dart';
 import 'package:union_shop/shipping.dart';
 import 'package:union_shop/collections.dart';
 import 'package:union_shop/product.dart';
 import 'package:union_shop/cart.dart';
+import 'package:union_shop/cart_repository.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:union_shop/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  final cart = CartModel();
+  final cart = CartModel(
+    repo: CartRepository(firestore: FirebaseFirestore.instance), // explicit runtime Firestore
+  );
   runApp(CartProvider(cart: cart, child: const UnionShopApp()));
 }
 

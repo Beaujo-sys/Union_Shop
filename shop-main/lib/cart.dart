@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'cart_repository.dart';
+import 'dart:async' as async;
 
 class CartItem {
   final String title;
@@ -26,17 +27,30 @@ class CartItem {
 
 class CartModel extends ChangeNotifier {
   final List<CartItem> _items = [];
-  final CartRepository _repo = CartRepository();
+  final CartRepository _repo;
+  async.StreamSubscription<User?>? _authSub;
 
-  CartModel() {
-    // Listen for sign-in/sign-out and sync cart
-    FirebaseAuth.instance.authStateChanges().listen((user) async {
+  // Allow injecting repo and auth stream (tests will pass a repo with null Firestore and empty auth)
+  CartModel({CartRepository? repo, async.Stream<User?>? authState})
+      : _repo = repo ?? CartRepository() {
+    final stream = authState ?? FirebaseAuth.instance.authStateChanges();
+    _authSub = stream.listen((user) async {
+      // When a user signs in, load their remote cart into the model.
       if (user != null) {
         await _repo.loadCartInto(this);
       } else {
-        clear(); // clear local cart on sign-out
+        // On sign-out, clear local cart and ensure remote cart is cleared.
+        _items.clear();
+        notifyListeners();
+        await _repo.clearUserCart();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _authSub?.cancel();
+    super.dispose();
   }
 
   List<CartItem> get items => List.unmodifiable(_items);
