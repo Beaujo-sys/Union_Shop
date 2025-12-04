@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/stylesheet.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'cart_repository.dart';
 
 class CartItem {
   final String title;
@@ -24,13 +26,24 @@ class CartItem {
 
 class CartModel extends ChangeNotifier {
   final List<CartItem> _items = [];
+  final CartRepository _repo = CartRepository();
+
+  CartModel() {
+    // Listen for sign-in/sign-out and sync cart
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (user != null) {
+        await _repo.loadCartInto(this);
+      } else {
+        clear(); // clear local cart on sign-out
+      }
+    });
+  }
 
   List<CartItem> get items => List.unmodifiable(_items);
 
   double get total => _items.fold(0.0, (sum, it) => sum + it.lineTotal);
 
   void addItem(CartItem item) {
-    // Merge same title+size as one line
     final idx = _items.indexWhere((it) => it.title == item.title && it.size == item.size);
     if (idx >= 0) {
       final existing = _items[idx];
@@ -39,12 +52,14 @@ class CartModel extends ChangeNotifier {
       _items.add(item);
     }
     notifyListeners();
+    _persistIfSignedIn();
   }
 
   void removeItemAt(int index) {
     if (index < 0 || index >= _items.length) return;
     _items.removeAt(index);
     notifyListeners();
+    _persistIfSignedIn();
   }
 
   void updateQuantity(int index, int quantity) {
@@ -55,11 +70,20 @@ class CartModel extends ChangeNotifier {
     }
     _items[index] = _items[index].copyWith(quantity: quantity);
     notifyListeners();
+    _persistIfSignedIn();
   }
 
   void clear() {
     _items.clear();
     notifyListeners();
+    _persistIfSignedIn(); // clears remote cart for signed-in users
+  }
+
+  Future<void> _persistIfSignedIn() async {
+    // Save to Firestore only when user is signed in
+    if (FirebaseAuth.instance.currentUser != null) {
+      await _repo.saveCart(this);
+    }
   }
 }
 
