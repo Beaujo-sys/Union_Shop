@@ -41,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await _auth.signInWithEmail(_email.text.trim(), _password.text);
       if (!mounted) return;
-      // Go to Home using named route
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } on FirebaseAuthException catch (e) {
       setState(() => _error = _mapAuthError(e));
@@ -59,7 +58,6 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } on FirebaseAuthException catch (e) {
-      // For register, show specific messages except invalid-email
       if (e.code == 'invalid-email') {
         setState(() => _error = 'Incorrect email or password');
       } else {
@@ -87,64 +85,125 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _handleSignOut() async {
+    setState(() { _busy = true; _error = null; });
+    try {
+      await _auth.signOut();
+      if (!mounted) return;
+      setState(() {});
+    } catch (_) {
+      setState(() => _error = 'Sign out failed');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(title: const Text('Account')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Sign in', style: Styles.sectionTitle),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _email,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _password,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                ),
-                const SizedBox(height: 12),
-                if (_error != null) Text(_error!, style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _busy ? null : _handleSignInEmail,
-                    child: _busy
-                        ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Text('Sign in'),
-                  ),
-                ),
-                TextButton(
-                  onPressed: _busy ? null : _handleRegisterEmail,
-                  child: const Text('Create account'),
-                ),
-                const SizedBox(height: 8),
-                Divider(color: theme.dividerColor),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.login),
-                    label: const Text('Sign in with Google'),
-                    onPressed: _busy ? null : _handleGoogle,
-                  ),
-                ),
-              ],
+    return StreamBuilder<User?>(
+      stream: _auth.authState,
+      builder: (context, snap) {
+        final user = snap.data;
+        final loading = snap.connectionState == ConnectionState.waiting;
+
+        return Scaffold(
+          appBar: AppBar(title: const Text('Account')),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: loading
+                    ? const CircularProgressIndicator()
+                    : (user != null
+                        // PROFILE VIEW (signed in)
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Signed in', style: Styles.sectionTitle),
+                              const SizedBox(height: 16),
+                              if (user.photoURL != null)
+                                CircleAvatar(backgroundImage: NetworkImage(user.photoURL!), radius: 32),
+                              const SizedBox(height: 12),
+                              Text(user.displayName ?? user.email ?? 'Authenticated'),
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _busy ? null : () {
+                                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                                  },
+                                  child: const Text('Go to Home'),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: _busy ? null : _handleSignOut,
+                                  child: _busy
+                                      ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                                      : const Text('Sign out'),
+                                ),
+                              ),
+                              if (_error != null) ...[
+                                const SizedBox(height: 8),
+                                Text(_error!, style: const TextStyle(color: Colors.red)),
+                              ],
+                            ],
+                          )
+                        // LOGIN FORM (signed out)
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Sign in', style: Styles.sectionTitle),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: _email,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: const InputDecoration(labelText: 'Email'),
+                              ),
+                              const SizedBox(height: 12),
+                              TextField(
+                                controller: _password,
+                                obscureText: true,
+                                decoration: const InputDecoration(labelText: 'Password'),
+                              ),
+                              const SizedBox(height: 12),
+                              if (_error != null) Text(_error!, style: const TextStyle(color: Colors.red)),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _busy ? null : _handleSignInEmail,
+                                  child: _busy
+                                      ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                                      : const Text('Sign in'),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: _busy ? null : _handleRegisterEmail,
+                                child: const Text('Create account'),
+                              ),
+                              const SizedBox(height: 8),
+                              Divider(color: theme.dividerColor),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(Icons.login),
+                                  label: const Text('Sign in with Google'),
+                                  onPressed: _busy ? null : _handleGoogle,
+                                ),
+                              ),
+                            ],
+                          )),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
