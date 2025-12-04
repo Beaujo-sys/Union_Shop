@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:union_shop/stylesheet.dart';
 
 class CollectionsPage extends StatefulWidget {
   const CollectionsPage({super.key, this.initialOpenTitle});
@@ -448,11 +449,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                                           Positioned(
                                             top: 8,
                                             left: 8,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(4)),
-                                              child: const Text('SALE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
-                                            ),
+                                            child: Styles.saleBadge(),
                                           ),
                                       ],
                                     ),
@@ -465,22 +462,10 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                                     children: [
                                       Text(item['title'] ?? '', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                                       const SizedBox(height: 4),
-                                      if ((item['salePrice'] ?? '').isNotEmpty)
-                                        Row(
-                                          children: [
-                                            Text(
-                                              item['price'] ?? '',
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                decoration: TextDecoration.lineThrough,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(item['salePrice'] ?? '', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
-                                          ],
-                                        )
-                                      else
-                                        Text(item['price'] ?? '', style: const TextStyle(color: Colors.black)),
+                                      Styles.priceRow(
+                                        price: item['price'] ?? '',
+                                        salePrice: item['salePrice'],
+                                      ),
                                     ],
                                   ),
                                 ),

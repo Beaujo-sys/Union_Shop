@@ -154,23 +154,8 @@ class _ProductPageState extends State<ProductPage> {
                 Text(title, style: Styles.title),
                 const SizedBox(height: 8),
 
-                if (salePriceStr.isNotEmpty)
-                  Row(
-                    children: [
-                      if (priceStr.isNotEmpty)
-                        Text(
-                          priceStr,
-                          style: Styles.strikePrice,
-                        ),
-                      if (priceStr.isNotEmpty) const SizedBox(width: 8),
-                      Text(
-                        salePriceStr,
-                        style: Styles.salePrice,
-                      ),
-                    ],
-                  )
-                else if (priceStr.isNotEmpty)
-                  Text(priceStr, style: Styles.price),
+                if (priceStr.isNotEmpty || salePriceStr.isNotEmpty)
+                  Styles.priceRow(price: priceStr, salePrice: salePriceStr.isNotEmpty ? salePriceStr : null),
 
                 const SizedBox(height: 12),
 

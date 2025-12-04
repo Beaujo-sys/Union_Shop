@@ -55,4 +55,27 @@ class Styles {
       bodyMedium: body,
     ),
   );
+
+    // UI helpers to keep widgets consistent and avoid duplication.
+    static Widget saleBadge({String label = 'SALE'}) {
+        return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(color: sale, borderRadius: BorderRadius.circular(4)),
+            child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+        );
+    }
+
+    static Widget priceRow({required String price, String? salePrice}) {
+        final hasSale = (salePrice ?? '').isNotEmpty;
+        if (hasSale) {
+            return Row(
+                children: [
+                    Text(price, style: strikePrice.copyWith(color: Colors.black)),
+                    const SizedBox(width: 8),
+                      Text(salePrice!, style: Styles.salePrice),
+                ],
+            );
+        }
+        return Text(price, style: Styles.priceSmall.copyWith(color: Colors.black));
+    }
 }
