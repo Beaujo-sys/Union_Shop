@@ -78,11 +78,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
 
     // Merge sale prices into their respective collections based on title
     Map<String, String> saleLookup = {};
-    final saleCollection = collections.firstWhere(
+    final Map<String, dynamic> saleCollection = collections.firstWhere(
       (c) => (c['title'] as String).toLowerCase().contains('sale'),
-      orElse: () => {},
+      orElse: () => <String, dynamic>{},
     );
-    if (saleCollection is Map<String, dynamic>) {
+    if (saleCollection.isNotEmpty) {
       for (final item in (saleCollection['items'] as List).cast<Map<String, String>>()) {
         final titleKey = (item['title'] ?? '').toLowerCase().replaceAll(RegExp(r'\s+sale$'), '');
         final salePrice = item['salePrice'] ?? '';
@@ -108,11 +108,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
     if (!_openedInitial && (widget.initialOpenTitle?.trim().isNotEmpty ?? false)) {
       _openedInitial = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final match = collections.firstWhere(
+        final Map<String, dynamic> match = collections.firstWhere(
           (c) => (c['title'] as String).toLowerCase() == widget.initialOpenTitle!.toLowerCase(),
-          orElse: () => {},
+          orElse: () => <String, dynamic>{},
         );
-        if (match is Map<String, dynamic>) {
+        if (match.isNotEmpty) {
           final items = List<Map<String, String>>.from(match['items'] as List);
           openCollection(context, match['title'] as String, items);
         }
@@ -182,7 +182,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
 class _CollectionItemsPage extends StatefulWidget {
   final String title;
   final List<Map<String, String>> items;
-  const _CollectionItemsPage({super.key, required this.title, required this.items});
+  const _CollectionItemsPage({Key? key, required this.title, required this.items}) : super(key: key);
 
   @override
   State<_CollectionItemsPage> createState() => _CollectionItemsPageState();
