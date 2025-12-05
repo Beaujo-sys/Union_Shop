@@ -111,14 +111,6 @@ Tests cover products, cart behavior, styles, home screen, shipping, about, and m
 - **Platform toolchains:** Android Studio, Xcode, Chrome, Windows Desktop as applicable.
 Refer to `pubspec.yaml` for the exact list of packages and versions.
 
-```markdown
-![Login](Assets/Images/login.png)
-![Collections](Assets/Images/collections.png)
-![Product](Assets/Images/product.png)
-![Cart](Assets/Images/cart.png)
-![Shipping](Assets/Images/shipping.png)
-```
-
 ## Troubleshooting
 - Run `flutter doctor` and resolve any issues reported.
 - If Firebase auth fails, re-run `flutterfire configure` and verify platform config files.
