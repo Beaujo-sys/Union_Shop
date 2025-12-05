@@ -47,9 +47,12 @@ class CheckoutPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: cart.items.isEmpty ? null : () {
+                      // Simulate order placement, then clear cart
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Dummy checkout complete!')),
                       );
+                      cart.clear();
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Styles.primary,
