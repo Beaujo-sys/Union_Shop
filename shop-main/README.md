@@ -22,8 +22,8 @@ An educational e-commerce Flutter app showcasing a simple online shop with login
 
 ## Installation
 Use Windows PowerShell commands.
-
-```powershell
+```
+powershell
 # Clone the repository
 git clone https://github.com/Beaujo-sys/https---github.com-Beaujo-sys-union_shop.git
 cd https---github.com-Beaujo-sys-union_shop/shop-main
@@ -110,23 +110,6 @@ Tests cover products, cart behavior, styles, home screen, shipping, about, and m
 - **Testing:** `flutter_test` and widget tests under `test/`.
 - **Platform toolchains:** Android Studio, Xcode, Chrome, Windows Desktop as applicable.
 Refer to `pubspec.yaml` for the exact list of packages and versions.
-
-## Screenshots & Media
-Place screenshots or GIFs under `Assets/Images/` and reference them here with relative paths.
-- Suggested captures:
-	- `Assets/Images/login.png` – Login screen
-	- `Assets/Images/collections.png` – Collections/home
-	- `Assets/Images/product.png` – Product detail
-	- `Assets/Images/cart.png` – Cart view
-	- `Assets/Images/shipping.png` – Shipping/checkout
-
-```markdown
-![Login](Assets/Images/login.png)
-![Collections](Assets/Images/collections.png)
-![Product](Assets/Images/product.png)
-![Cart](Assets/Images/cart.png)
-![Shipping](Assets/Images/shipping.png)
-```
 
 ## Troubleshooting
 - Run `flutter doctor` and resolve any issues reported.
