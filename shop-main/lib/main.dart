@@ -184,6 +184,7 @@ class _HeaderBar extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
+                      if (isMobile) const Spacer(),
                       if (!isMobile)
                         Expanded(
                           child: SingleChildScrollView(
@@ -226,57 +227,68 @@ class _HeaderBar extends StatelessWidget {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 600),
                         child: isMobile
-                            ? IconButton(
-                                icon: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    backgroundColor: Colors.white,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                                    ),
-                                    builder: (ctx) {
-                                      Widget item(String label, IconData icon, VoidCallback onTap) {
-                                        return ListTile(
-                                          leading: Icon(icon, color: const Color(0xFF4d2963)),
-                                          title: Text(label),
-                                          onTap: () {
-                                            Navigator.pop(ctx);
-                                            onTap();
-                                          },
-                                        );
-                                      }
-
-                                      return SafeArea(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(height: 8),
-                                            Container(
-                                              height: 4,
-                                              width: 48,
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[300],
-                                                borderRadius: BorderRadius.circular(2),
-                                              ),
-                                            ),
-                                            //mobile drop down menu
-                                            const SizedBox(height: 12),
-                                            item('Home', Icons.home_outlined, () => push('/')),
-                                            item('Print Shack', Icons.print_outlined, () => push('/print-shack')),
-                                            item('About Us', Icons.info_outline, () => push('/about')),
-                                            item('Shipping', Icons.local_shipping_outlined, () => push('/shipping')),
-                                            const Divider(height: 0),
-                                            item('Search', Icons.search, () => openSearch()),
-                                            item('Profile', Icons.person_outline, () => push('/login')),
-                                            item('Cart', Icons.shopping_bag_outlined, () => push('/cart')),
-                                            const SizedBox(height: 8),
-                                          ],
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.search, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                    onPressed: () => openSearch(),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: Colors.white,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                                         ),
+                                        builder: (ctx) {
+                                          Widget item(String label, IconData icon, VoidCallback onTap) {
+                                            return ListTile(
+                                              leading: Icon(icon, color: const Color(0xFF4d2963)),
+                                              title: Text(label),
+                                              onTap: () {
+                                                Navigator.pop(ctx);
+                                                onTap();
+                                              },
+                                            );
+                                          }
+
+                                          return SafeArea(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const SizedBox(height: 8),
+                                                Container(
+                                                  height: 4,
+                                                  width: 48,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[300],
+                                                    borderRadius: BorderRadius.circular(2),
+                                                  ),
+                                                ),
+                                                //mobile drop down menu
+                                                const SizedBox(height: 12),
+                                                item('Home', Icons.home_outlined, () => push('/')),
+                                                item('Print Shack', Icons.print_outlined, () => push('/print-shack')),
+                                                item('About Us', Icons.info_outline, () => push('/about')),
+                                                item('Shipping', Icons.local_shipping_outlined, () => push('/shipping')),
+                                                const Divider(height: 0),
+                                                // Search now exposed as icon; remove from menu
+                                                item('Profile', Icons.person_outline, () => push('/login')),
+                                                item('Cart', Icons.shopping_bag_outlined, () => push('/cart')),
+                                                const SizedBox(height: 8),
+                                              ],
+                                            ),
+                                          );
+                                        },
                                       );
                                     },
-                                  );
-                                },
+                                  ),
+                                ],
                               )
                             : Row(
                                 mainAxisSize: MainAxisSize.min,
