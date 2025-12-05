@@ -41,4 +41,16 @@ class AuthService {
       await _auth.signOut();
     }
   }
+
+  Future<UserCredential> signInWithGitHub() async {
+    if (kIsWeb) {
+      final githubProvider = GithubAuthProvider();
+      githubProvider.addScope('user:email');
+      return await _auth.signInWithPopup(githubProvider);
+    } else {
+      final provider = OAuthProvider('github.com');
+      provider.setScopes(['user:email']);
+      return await _auth.signInWithProvider(provider);
+    }
+  }
 }

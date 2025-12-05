@@ -195,6 +195,31 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: _busy ? null : _handleGoogle,
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(Icons.code),
+                                  label: const Text('Sign in with GitHub'),
+                                  onPressed: _busy
+                                      ? null
+                                      : () async {
+                                          setState(() { _error = null; _busy = true; });
+                                          try {
+                                            await _auth.signInWithGitHub();
+                                            if (!context.mounted) return;
+                                            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                                          } on FirebaseAuthException catch (e) {
+                                            setState(() => _error = e.message ?? 'GitHub sign-in failed');
+                                          } catch (e) {
+                                            setState(() => _error = 'GitHub sign-in failed');
+                                          } finally {
+                                            if (mounted) setState(() => _busy = false);
+                                          }
+                                        },
+                                ),
+                              ),
                             ],
                           )),
               ),
