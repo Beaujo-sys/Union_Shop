@@ -27,7 +27,17 @@ class CheckoutPage extends StatelessWidget {
                   final it = cart.items[i];
                   return ListTile(
                     title: Text(it.title, style: Styles.productName),
-                    subtitle: Text('Qty: ${it.quantity}  •  Unit: ${_fmt(it.unitPrice)}', style: Styles.body),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Qty: ${it.quantity}  •  Unit: ${_fmt(it.unitPrice)}', style: Styles.body),
+                        if (it.size != null && it.size!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text('Size: ${it.size}', style: Styles.body),
+                          ),
+                      ],
+                    ),
                     trailing: Text(_fmt(it.lineTotal), style: Styles.price),
                   );
                 },
@@ -47,7 +57,6 @@ class CheckoutPage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: cart.items.isEmpty ? null : () {
-                      // Simulate order placement, then clear cart
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Dummy checkout complete!')),
                       );
