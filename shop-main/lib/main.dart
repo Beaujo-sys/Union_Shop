@@ -10,6 +10,7 @@ import 'package:union_shop/cart.dart';
 import 'package:union_shop/cart_repository.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:union_shop/login.dart';
+import 'package:union_shop/checkout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,6 +82,8 @@ class _ShellState extends State<Shell> {
                     return MaterialPageRoute(builder: (_) => const AboutPage(), settings: settings);
                   case '/shipping':
                     return MaterialPageRoute(builder: (_) => const ShippingPage(), settings: settings);
+                  case '/checkout':
+                    return MaterialPageRoute(builder: (_) => const CheckoutPage(), settings: settings);
                   case '/collections':
                     final args = settings.arguments as Map<String, String>?;
                     final initial = args?['open'];

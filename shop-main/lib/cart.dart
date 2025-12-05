@@ -339,6 +339,17 @@ class CartPage extends StatelessWidget {
                       _fmt(cart.total),
                       style: Styles.price.copyWith(color: Colors.black),
                     ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: cart.items.isEmpty ? null : () {
+                        Navigator.pushNamed(context, '/checkout');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Styles.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Checkout'),
+                    ),
                   ],
                 ),
               ),
