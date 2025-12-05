@@ -164,7 +164,7 @@ class _ProductPageState extends State<ProductPage> {
                   const Text('Size', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: currentSelected,
+                    initialValue: currentSelected,
                     items: availableSizes.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
                     onChanged: (val) => setState(() => _selectedSize = val),
                     decoration: InputDecoration(

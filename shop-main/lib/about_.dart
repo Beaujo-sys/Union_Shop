@@ -11,11 +11,11 @@ class AboutPage extends StatelessWidget {
         title: const Text('About Us'),
         backgroundColor: const Color(0xFF4d2963),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             SizedBox(height: 12),
             Text('About Us', style: Styles.pageHeading),
             SizedBox(height: 8),

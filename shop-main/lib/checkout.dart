@@ -17,7 +17,7 @@ class CheckoutPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Order Summary', style: Styles.sectionTitle),
+            const Text('Order Summary', style: Styles.sectionTitle),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(

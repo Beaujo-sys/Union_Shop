@@ -153,7 +153,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
                       ),
-                      Container(color: Colors.black.withOpacity(0.45)),
+                      Container(color: Colors.black.withValues(alpha: 0.45)),
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -281,7 +281,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                     SizedBox(
                       width: 160,
                       child: DropdownButtonFormField<String>(
-                        value: _category,
+                        initialValue: _category,
                         items: const [
                           DropdownMenuItem(value: 'All', child: Text('All categories')),
                           DropdownMenuItem(value: 'Clothing', child: Text('Clothing')),
@@ -346,7 +346,7 @@ class _CollectionItemsPageState extends State<_CollectionItemsPage> {
                   SizedBox(
                     width: 160,
                     child: DropdownButtonFormField<String>(
-                      value: _sort,
+                      initialValue: _sort,
                       items: const [
                         DropdownMenuItem(value: 'None', child: Text('No sort')),
                         DropdownMenuItem(value: 'Price ↑', child: Text('Price low-high')),

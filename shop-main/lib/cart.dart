@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,7 +104,7 @@ class CartModel extends ChangeNotifier {
 }
 
 class CartProvider extends InheritedNotifier<CartModel> {
-  CartProvider({super.key, required CartModel cart, required Widget child}) : super(notifier: cart, child: child);
+  const CartProvider({super.key, required CartModel cart, required Widget child}) : super(notifier: cart, child: child);
 
   static CartModel of(BuildContext context) {
     final provider = context.dependOnInheritedWidgetOfExactType<CartProvider>();
@@ -121,7 +123,7 @@ class CartPage extends StatelessWidget {
     final cart = CartProvider.of(context);
     const double thumbSize = 84;
     const double iconSize = 22;
-    final TextStyle labelStyle = Styles.uiLabel;
+    const TextStyle labelStyle = Styles.uiLabel;
 
     Widget qtyBadge(int qty) {
       return Positioned(
@@ -132,7 +134,7 @@ class CartPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: Styles.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Styles.primary.withOpacity(0.25)),
+                border: Border.all(color: Styles.primary.withValues(alpha: 0.25)),
             boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3, offset: Offset(0, 1))],
           ),
           child: Text(
@@ -233,7 +235,7 @@ class CartPage extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: Styles.surface,
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Styles.primary.withOpacity(0.25)),
+                                  border: Border.all(color: Styles.primary.withValues(alpha: 0.25)),
                                 ),
                                 child: Text('Qty: ${item.quantity}', style: Styles.uiLabel.copyWith(color: Styles.textPrimary)),
                               ),
@@ -287,7 +289,7 @@ class CartPage extends StatelessWidget {
                                     icon: const Icon(Icons.remove_circle_outline, color: Styles.textPrimary),
                                     onPressed: () => cart.updateQuantity(i, item.quantity - 1),
                                   ),
-                                  Text('Decrease', style: labelStyle),
+                                  const Text('Decrease', style: labelStyle),
                                 ],
                               ),
                               Column(
@@ -300,7 +302,7 @@ class CartPage extends StatelessWidget {
                                     icon: const Icon(Icons.add_circle_outline, color: Styles.textPrimary),
                                     onPressed: () => cart.updateQuantity(i, item.quantity + 1),
                                   ),
-                                  Text('Increase', style: labelStyle),
+                                  const Text('Increase', style: labelStyle),
                                 ],
                               ),
                               Column(
@@ -313,7 +315,7 @@ class CartPage extends StatelessWidget {
                                     icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                                     onPressed: () => cart.removeItemAt(i),
                                   ),
-                                  Text('Remove', style: labelStyle),
+                                  const Text('Remove', style: labelStyle),
                                 ],
                               ),
                             ],
@@ -329,7 +331,7 @@ class CartPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Styles.surface,
-                  border: Border(top: BorderSide(color: Styles.primary.withOpacity(0.1))),
+                  border: Border(top: BorderSide(color: Styles.primary.withValues(alpha: 0.1))),
                 ),
                 child: Row(
                   children: [

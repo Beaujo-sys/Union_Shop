@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Signed in', style: Styles.sectionTitle),
+                              const Text('Signed in', style: Styles.sectionTitle),
                               const SizedBox(height: 16),
                               if (user.photoURL != null)
                                 CircleAvatar(backgroundImage: NetworkImage(user.photoURL!), radius: 32),
@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                         : Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Sign in', style: Styles.sectionTitle),
+                              const Text('Sign in', style: Styles.sectionTitle),
                               const SizedBox(height: 16),
                               TextField(
                                 controller: _email,

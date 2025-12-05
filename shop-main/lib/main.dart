@@ -11,6 +11,7 @@ import 'package:union_shop/cart_repository.dart';
 import 'package:union_shop/stylesheet.dart';
 import 'package:union_shop/login.dart';
 import 'package:union_shop/checkout.dart';
+import 'package:union_shop/print_shack.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,6 +83,8 @@ class _ShellState extends State<Shell> {
                     return MaterialPageRoute(builder: (_) => const AboutPage(), settings: settings);
                   case '/shipping':
                     return MaterialPageRoute(builder: (_) => const ShippingPage(), settings: settings);
+                  case '/print-shack':
+                    return MaterialPageRoute(builder: (_) => const PrintShackPage(), settings: settings);
                   case '/checkout':
                     return MaterialPageRoute(builder: (_) => const CheckoutPage(), settings: settings);
                   case '/collections':
@@ -182,35 +185,44 @@ class _HeaderBar extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       if (!isMobile)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextButton(
-                              onPressed: () => push('/'),
-                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                              child: const Text('Home'),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () => push('/'),
+                                  style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                  child: const Text('Home'),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () => push('/collections', args: {'open': 'SALE'}),
+                                  style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                  child: const Text('Product Sales'),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () => push('/print-shack'),
+                                  style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                  child: const Text('Print Shack'),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () => push('/about'),
+                                  style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                  child: const Text('About Us'),
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  onPressed: () => push('/shipping'),
+                                  style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
+                                  child: const Text('Shipping'),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              onPressed: () => push('/collections', args: {'open': 'SALE'}),
-                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                              child: const Text('Product Sales'),
-                            ),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              onPressed: () => push('/about'),
-                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                              child: const Text('About Us'),
-                            ),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              onPressed: () => push('/shipping'),
-                              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4d2963)),
-                              child: const Text('Shipping'),
-                            ),
-                          ],
+                          ),
                         ),
-                      const Spacer(),
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 600),
                         child: isMobile
@@ -251,6 +263,7 @@ class _HeaderBar extends StatelessWidget {
                                             //mobile drop down menu
                                             const SizedBox(height: 12),
                                             item('Home', Icons.home_outlined, () => push('/')),
+                                            item('Print Shack', Icons.print_outlined, () => push('/print-shack')),
                                             item('About Us', Icons.info_outline, () => push('/about')),
                                             item('Shipping', Icons.local_shipping_outlined, () => push('/shipping')),
                                             const Divider(height: 0),
@@ -328,7 +341,7 @@ class HomeBody extends StatelessWidget {
                       ),
                     ),
                     child: Container(
-                      decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
+                      decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.7)),
                     ),
                   ),
                 ),
@@ -368,7 +381,7 @@ class HomeBody extends StatelessWidget {
               padding: const EdgeInsets.all(40.0),
               child: Column(
                 children: [
-                  Text('PRODUCTS SECTION', style: Styles.sectionTitle),
+                  const Text('PRODUCTS SECTION', style: Styles.sectionTitle),
                   const SizedBox(height: 48),
                   GridView.count(
                     shrinkWrap: true,
@@ -577,18 +590,18 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
   GlobalSearchDelegate({required this.onNavigate});
   final void Function(String route, {Object? args}) onNavigate;
 //search bar functionality
-  final List<_SearchEntry> entries = [
-    _SearchEntry(label: 'About Us', icon: Icons.info_outline, route: '/about'),
-    _SearchEntry(label: 'Shipping', icon: Icons.local_shipping_outlined, route: '/shipping'),
-    _SearchEntry(label: 'Profile', icon: Icons.person_outline, route: '/login'),
-    _SearchEntry(label: 'Collections', icon: Icons.category_outlined, route: '/collections'),
-    _SearchEntry(label: 'Clothing', icon: Icons.checkroom_outlined, route: '/collections'),
-    _SearchEntry(label: 'Accessories', icon: Icons.watch_outlined, route: '/collections'),
-    _SearchEntry(label: 'Stationery', icon: Icons.edit_outlined, route: '/collections'),
-    _SearchEntry(label: 'Sale', icon: Icons.local_offer_outlined, route: '/collections'),
+  final List<SearchEntry> entries = [
+    const SearchEntry(label: 'About Us', icon: Icons.info_outline, route: '/about'),
+    const SearchEntry(label: 'Shipping', icon: Icons.local_shipping_outlined, route: '/shipping'),
+    const SearchEntry(label: 'Profile', icon: Icons.person_outline, route: '/login'),
+    const SearchEntry(label: 'Collections', icon: Icons.category_outlined, route: '/collections'),
+    const SearchEntry(label: 'Clothing', icon: Icons.checkroom_outlined, route: '/collections'),
+    const SearchEntry(label: 'Accessories', icon: Icons.watch_outlined, route: '/collections'),
+    const SearchEntry(label: 'Stationery', icon: Icons.edit_outlined, route: '/collections'),
+    const SearchEntry(label: 'Sale', icon: Icons.local_offer_outlined, route: '/collections'),
   ];
 
-  List<_SearchEntry> _filter(String q) {
+  List<SearchEntry> _filter(String q) {
     final query = q.trim().toLowerCase();
     if (query.isEmpty) return entries;
     return entries.where((e) => e.label.toLowerCase().contains(query)).toList();
@@ -625,7 +638,7 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
     return _buildList(context, items);
   }
 //list of search results
-  Widget _buildList(BuildContext context, List<_SearchEntry> items) {
+  Widget _buildList(BuildContext context, List<SearchEntry> items) {
     if (items.isEmpty) return const Center(child: Text('No matches'));
     return ListView.separated(
       itemCount: items.length,
@@ -651,11 +664,11 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
   }
 }
 
-class _SearchEntry {
+class SearchEntry {
   final String label;
   final IconData icon;
   final String route;
-  const _SearchEntry({required this.label, required this.icon, required this.route});
+  const SearchEntry({required this.label, required this.icon, required this.route});
 }
 
 
