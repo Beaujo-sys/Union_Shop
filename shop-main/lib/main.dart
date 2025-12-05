@@ -123,6 +123,7 @@ extension on _ShellState {
   }
 }
 
+// Header bar widget
 class _HeaderBar extends StatelessWidget {
   const _HeaderBar();
 
@@ -247,6 +248,7 @@ class _HeaderBar extends StatelessWidget {
                                                 borderRadius: BorderRadius.circular(2),
                                               ),
                                             ),
+                                            //mobile drop down menu
                                             const SizedBox(height: 12),
                                             item('Home', Icons.home_outlined, () => push('/')),
                                             item('About Us', Icons.info_outline, () => push('/about')),
@@ -306,7 +308,7 @@ class HomeBody extends StatelessWidget {
   final VoidCallback onSearch;
 
   void navigateToCollections() => onNavigate('/collections');
-
+//Home page
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -359,7 +361,7 @@ class HomeBody extends StatelessWidget {
               ],
             ),
           ),
-
+//the 4 products section shown on home page
           Container(
             color: Colors.white,
             child: Padding(
@@ -452,7 +454,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
+//footer depends on screen size
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
@@ -540,7 +542,7 @@ class _FooterColumn extends StatelessWidget {
     required this.titleStyle,
     required this.linkStyle,
   });
-
+//for shipping and about us links in footer
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -556,7 +558,7 @@ class _FooterColumn extends StatelessWidget {
               } else if (link == 'About Us') {
                 Navigator.pushNamed(context, '/about');
               } else {
-                // no-op / future routes
+
               }
             },
             style: TextButton.styleFrom(
@@ -574,7 +576,7 @@ class _FooterColumn extends StatelessWidget {
 class GlobalSearchDelegate extends SearchDelegate<String> {
   GlobalSearchDelegate({required this.onNavigate});
   final void Function(String route, {Object? args}) onNavigate;
-
+//search bar functionality
   final List<_SearchEntry> entries = [
     _SearchEntry(label: 'About Us', icon: Icons.info_outline, route: '/about'),
     _SearchEntry(label: 'Shipping', icon: Icons.local_shipping_outlined, route: '/shipping'),
@@ -622,7 +624,7 @@ class GlobalSearchDelegate extends SearchDelegate<String> {
     final items = _filter(query);
     return _buildList(context, items);
   }
-
+//list of search results
   Widget _buildList(BuildContext context, List<_SearchEntry> items) {
     if (items.isEmpty) return const Center(child: Text('No matches'));
     return ListView.separated(
