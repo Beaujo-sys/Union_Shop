@@ -20,7 +20,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
       ),
     );
   }
-
+//list of items and their details in such as price ,image, category and sizes if applicable
   @override
   Widget build(BuildContext context) {
     final collections = <Map<String, dynamic>>[

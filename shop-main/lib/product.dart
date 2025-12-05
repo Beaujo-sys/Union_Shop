@@ -33,7 +33,7 @@ class _ProductPageState extends State<ProductPage> {
 
     final titleNorm = title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
     final categoryNorm = (item?['category'] ?? '').toLowerCase();
-
+//preset sizes for specified clothing items
     if (categoryNorm == 'clothing' ||
         titleNorm.contains('tshirt') ||
         titleNorm.contains('hoodie') ||
@@ -49,7 +49,7 @@ class _ProductPageState extends State<ProductPage> {
   String _descriptionForItem(Map<String, String>? item) {
     final t = (item?['title'] ?? '').toLowerCase();
     final c = (item?['category'] ?? '').toLowerCase();
-
+//preset descriptions for specified items based on category and title
     if (c == 'clothing') {
       if (t.contains('hoodie')) return 'Soft cotton-blend hoodie with UoP theme.';
       if (t.contains('tshirt') || t.contains('t‑shirt')) return 'Classic T‑shirt featuring the UoP colours.';
@@ -87,6 +87,7 @@ class _ProductPageState extends State<ProductPage> {
     return 'Official UoP merchandise.';
   }
 
+//widget to display product image with error handling
   Widget imageWidget(String image) {
     if (image.isEmpty) {
       return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
@@ -100,7 +101,7 @@ class _ProductPageState extends State<ProductPage> {
       return Container(height: 240, color: Colors.grey[200], child: const Center(child: Icon(Icons.broken_image)));
     });
   }
-
+//builds the product page UI
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
@@ -140,7 +141,7 @@ class _ProductPageState extends State<ProductPage> {
         _qtyCtrl.text = '$newQ';
       });
     }
-
+//returns the complete product page 
     return Scaffold(
       appBar: AppBar(title: Text(title), backgroundColor: const Color(0xFF4d2963)),
       body: SingleChildScrollView(
